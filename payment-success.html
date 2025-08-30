@@ -6,6 +6,25 @@
   <title>Pembayaran Berjaya - HasraStore</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '810870364294543');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=810870364294543&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+  
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -54,6 +73,17 @@
       const orderData = JSON.parse(sessionStorage.getItem('pendingOrder'));
       
       if (orderData) {
+        // Track purchase event
+        fbq('track', 'Purchase', {
+          content_name: orderData.product,
+          content_category: 'Watches',
+          content_ids: [orderData.product === 'GA-110 Hitam' ? 'GA110' : 'GA100'],
+          content_type: 'product',
+          value: orderData.total,
+          currency: 'MYR',
+          order_id: orderData.orderId || ('ORDER_' + Date.now())
+        });
+        
         // Display order details to the customer
         const orderDetailsElement = document.getElementById('orderDetails');
         orderDetailsElement.innerHTML = `

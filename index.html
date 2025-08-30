@@ -6,6 +6,25 @@
   <title>HasraStore - G-SHOCK Promosi</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '810870364294543');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=810870364294543&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+  
   <style>
     /* All existing styles remain unchanged */
     html {
@@ -143,6 +162,38 @@
       font-size: 40px;
       cursor: pointer;
       z-index: 1001;
+    }
+    
+    /* Image navigation buttons */
+    .image-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(255, 255, 255, 0.7);
+      color: #333;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 1001;
+      font-size: 18px;
+      transition: all 0.3s ease;
+    }
+    
+    .image-nav-btn:hover {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .image-nav-prev {
+      left: 20px;
+    }
+    
+    .image-nav-next {
+      right: 20px;
     }
     
     /* Product image cursor style */
@@ -302,6 +353,7 @@
       margin-bottom: 1rem;
       text-align: center;
       transition: transform 0.2s ease;
+      position: relative;
     }
     
     .product-card:hover {
@@ -346,6 +398,32 @@
     
     .quantity-btn:hover {
       border-color: #ef4444;
+    }
+    
+    .deselect-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #f3f4f6;
+      color: #6b7280;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+    
+    .product-card.selected .deselect-btn {
+      display: flex;
+    }
+    
+    .deselect-btn:hover {
+      background: #ef4444;
+      color: white;
     }
     
     .order-summary {
@@ -722,6 +800,9 @@
           
           <!-- Product 1: GA-110 Hitam -->
           <div class="product-card" data-product="GA-110 Hitam">
+            <div class="deselect-btn">
+              <i class="fas fa-times"></i>
+            </div>
             <img src="https://i.imgur.com/KCEIin8.png?w=200" alt="GA-110 Hitam">
             <h3 class="font-bold">G-SHOCK GA-110 Hitam</h3>
             <p class="text-sm text-gray-600 mb-1">RM69.90</p>
@@ -734,6 +815,9 @@
           
           <!-- Product 2: GA-100 Merah -->
           <div class="product-card" data-product="GA-100 Merah">
+            <div class="deselect-btn">
+              <i class="fas fa-times"></i>
+            </div>
             <img src="https://i.imgur.com/n9UdOUF.jpeg?w=200" alt="GA-100 Merah">
             <h3 class="font-bold">G-SHOCK GA-100 Merah</h3>
             <p class="text-sm text-gray-600 mb-1">RM69.90</p>
@@ -883,6 +967,12 @@
   <!-- Image Zoom Modal -->
   <div id="imageZoomModal" class="image-zoom-modal">
     <span class="image-zoom-close">&times;</span>
+    <button id="imageNavPrev" class="image-nav-btn image-nav-prev">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button id="imageNavNext" class="image-nav-btn image-nav-next">
+      <i class="fas fa-chevron-right"></i>
+    </button>
     <img id="zoomedImage" src="" alt="">
   </div>
   
@@ -954,10 +1044,72 @@
     const TOYYIBPAY_CONFIG = {
       userSecretKey: 'b2kcp05o-b5m0-q000-55i7-w3j57riufv7h', // Provided secret key
       categoryCode: 'ltigdivv', // Provided category code
-      callbackUrl: 'https://g-shockbyhasratore.vercel.app/payment-callback.html', // Replace with your callback URL
-      returnUrl: 'https://g-shockbyhasratore.vercel.app/payment-success.html',    // Replace with your return URL
-      failedUrl: 'https://g-shockbyhasratore.vercel.app/payment-failed.html'      // Replace with your failed URL
+      callbackUrl: 'https://https://g-shockbyhasrastore.vercel.app//payment-callback.html', // Replace with your callback URL
+      returnUrl: 'https://https://g-shockbyhasrastore.vercel.app//payment-success.html',    // Replace with your return URL
+      failedUrl: 'https://https://g-shockbyhasrastore.vercel.app//payment-failed.html'      // Replace with your failed URL
     };
+    
+    // Meta Pixel Event Tracking
+    document.addEventListener('DOMContentLoaded', function() {
+      // Track product view
+      fbq('track', 'ViewContent', {
+        content_name: 'G-SHOCK 1:1 Premium',
+        content_category: 'Watches',
+        content_ids: ['GA110', 'GA100'],
+        content_type: 'product_group',
+        value: 69.90,
+        currency: 'MYR'
+      });
+    });
+    
+    // Track add to cart when product is selected
+    document.querySelectorAll('.quantity-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const productCard = this.closest('.product-card');
+        const productName = productCard.dataset.product;
+        const quantity = parseInt(this.dataset.quantity);
+        
+        if (productCard.classList.contains('selected')) {
+          const productCode = productName === 'GA-110 Hitam' ? 'GA110' : 'GA100';
+          
+          fbq('track', 'AddToCart', {
+            content_name: productName,
+            content_category: 'Watches',
+            content_ids: [productCode],
+            content_type: 'product',
+            value: 69.90 * quantity,
+            currency: 'MYR'
+          });
+        }
+      });
+    });
+    
+    // Track initiate checkout when order is submitted
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const validationError = validateForm();
+      if (!validationError) {
+        const totalAmount = parseFloat(document.getElementById('totalAmount').textContent.replace('RM', ''));
+        const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
+        const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
+        const contentIds = [];
+        
+        if (ga110Qty > 0) contentIds.push('GA110');
+        if (ga100Qty > 0) contentIds.push('GA100');
+        
+        fbq('track', 'InitiateCheckout', {
+          content_ids: contentIds,
+          content_type: 'product',
+          value: totalAmount,
+          currency: 'MYR',
+          num_items: ga110Qty + ga100Qty
+        });
+        
+        // Continue with your existing form submission logic
+        document.getElementById('customerInfoModal').classList.add('active');
+      }
+    });
     
     // Countdown Timer 30 minutes
     let timer = 30 * 60;
@@ -1304,7 +1456,7 @@ ${paymentStatusText}
       }
     }
     
-    // Update order summary
+    // Function to update order summary
     function updateOrderSummary() {
       const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
       const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
@@ -1369,144 +1521,76 @@ ${paymentStatusText}
       
       // Show message if no items selected
       if (!hasItems) {
-        const noItemsDiv = document.createElement('div');
-        noItemsDiv.className = 'order-summary-item';
-        noItemsDiv.innerHTML = `
-          <span>Tiada produk dipilih</span>
-          <span>RM0.00</span>
+        orderSummaryContent.innerHTML = `
+          <div class="order-summary-item">
+            <span>Tiada produk dipilih</span>
+            <span>RM0.00</span>
+          </div>
         `;
-        orderSummaryContent.appendChild(noItemsDiv);
       }
     }
     
-    // Handler for main order form (product selection and payment)
+    // Initialize order summary
+    updateOrderSummary();
+    
+    // Product selection functionality
+    document.querySelectorAll('.product-card').forEach(card => {
+      const quantityBtns = card.querySelectorAll('.quantity-btn');
+      const deselectBtn = card.querySelector('.deselect-btn');
+      const product = card.dataset.product;
+      
+      quantityBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const quantity = parseInt(this.dataset.quantity);
+          
+          // Toggle active state
+          quantityBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          
+          // Update hidden input
+          if (product === 'GA-110 Hitam') {
+            document.getElementById('ga110Quantity').value = quantity;
+          } else if (product === 'GA-100 Merah') {
+            document.getElementById('ga100Quantity').value = quantity;
+          }
+          
+          // Mark card as selected
+          card.classList.add('selected');
+          
+          // Update order summary
+          updateOrderSummary();
+        });
+      });
+      
+      // Deselect button
+      deselectBtn.addEventListener('click', function() {
+        // Remove active state from all quantity buttons
+        quantityBtns.forEach(b => b.classList.remove('active'));
+        
+        // Reset hidden input
+        if (product === 'GA-110 Hitam') {
+          document.getElementById('ga110Quantity').value = 0;
+        } else if (product === 'GA-100 Merah') {
+          document.getElementById('ga100Quantity').value = 0;
+        }
+        
+        // Remove selected class
+        card.classList.remove('selected');
+        
+        // Update order summary
+        updateOrderSummary();
+      });
+    });
+    
+    // Payment method change
+    document.getElementById('payment').addEventListener('change', updateOrderSummary);
+    
+    // Order form submission
     document.getElementById('orderForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
-      // Check if payment method is selected
-      const paymentMethod = document.getElementById('payment').value;
-      if (!paymentMethod) {
-        showErrorPopup('Sila pilih kaedah pembayaran');
-        return;
-      }
-      
-      // Check if at least one product is selected
-      const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
-      const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
-      
-      if (ga110Qty === 0 && ga100Qty === 0) {
-        showErrorPopup('Sila pilih sekurang-kurangnya satu produk');
-        return;
-      }
-      
       // Show customer info modal
       document.getElementById('customerInfoModal').classList.add('active');
-    });
-    
-    // Handler for customer info form
-    document.getElementById('confirmCustomerInfo').addEventListener('click', async function(e) {
-      e.preventDefault();
-      
-      // Hide any existing errors
-      hideErrorPopup();
-      
-      // Validate form
-      const validationError = validateForm();
-      if (validationError) {
-        showErrorPopup(validationError.message);
-        scrollToAndHighlight(validationError.element);
-        return;
-      }
-      
-      // Get form values
-      const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
-      const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
-      const customerName = document.getElementById('modalCustomerName').value;
-      const customerPhone = document.getElementById('modalCustomerPhone').value;
-      const customerAddress = document.getElementById('modalCustomerAddress').value;
-      const poskod = document.getElementById('modalPoskod').value.trim();
-      const customerState = document.getElementById('modalCustomerState').value;
-      const paymentMethod = document.getElementById('payment').value;
-      
-      // Determine product and quantity
-      let product, quantity;
-      if (ga110Qty > 0 && ga100Qty > 0) {
-        product = "GA-110 Hitam & GA-100 Merah";
-        quantity = `${ga110Qty} & ${ga100Qty}`;
-      } else if (ga110Qty > 0) {
-        product = "GA-110 Hitam";
-        quantity = ga110Qty;
-      } else {
-        product = "GA-100 Merah";
-        quantity = ga100Qty;
-      }
-      
-      // Calculate total
-      let total = (ga110Qty + ga100Qty) * 69.90;
-      if (paymentMethod === 'COD') {
-        total += 5;
-      }
-      
-      // Prepare order data
-      const orderData = {
-        product,
-        quantity,
-        customerName,
-        customerPhone,
-        customerAddress,
-        poskod,
-        customerState,
-        paymentMethod,
-        total: total.toFixed(2),
-        orderDate: new Date().toISOString(),
-        paymentStatus: paymentMethod === 'COD' ? 'Pending' : 'Pending Payment'
-      };
-      
-      // Show loading overlay
-      document.getElementById('loadingOverlay').classList.remove('hidden');
-      
-      try {
-        if (paymentMethod === 'COD') {
-          // For COD: Send Telegram notification immediately
-          const telegramSuccess = await sendTelegramNotification(orderData);
-          
-          // Hide loading overlay
-          document.getElementById('loadingOverlay').classList.add('hidden');
-          
-          if (telegramSuccess) {
-            // Show success modal for COD
-            document.getElementById('successMessage').textContent = 
-              'Terima kasih atas tempahan anda. Kami akan menghubungi anda untuk pengesahan penghantaran.';
-            document.getElementById('successModal').classList.remove('hidden');
-            
-            // Close customer info modal
-            document.getElementById('customerInfoModal').classList.remove('active');
-            
-            // Show COD notification
-            showCodNotification();
-          } else {
-            showErrorPopup('Ralat: Gagal menghantar notifikasi. Sila cuba lagi.');
-          }
-        } else if (paymentMethod === 'Online') {
-          // For Online Payment: Store order data and redirect to ToyyibPay
-          sessionStorage.setItem('pendingOrder', JSON.stringify(orderData));
-          
-          // Close customer info modal
-          document.getElementById('customerInfoModal').classList.remove('active');
-          
-          // Redirect to ToyyibPay
-          const redirectSuccess = await redirectToToyyibPay(orderData);
-          
-          // Hide loading overlay if redirection failed
-          if (!redirectSuccess) {
-            document.getElementById('loadingOverlay').classList.add('hidden');
-          }
-        }
-      } catch (error) {
-        console.error('Error processing payment:', error);
-        document.getElementById('loadingOverlay').classList.add('hidden');
-        showErrorPopup('Ralat: Berlaku masalah semasa memproses pembayaran. Sila cuba lagi.');
-      }
     });
     
     // Close customer info modal
@@ -1518,211 +1602,290 @@ ${paymentStatusText}
       document.getElementById('customerInfoModal').classList.remove('active');
     });
     
+    // Confirm order
+    document.getElementById('confirmCustomerInfo').addEventListener('click', async function() {
+      const validationError = validateForm();
+      
+      if (validationError) {
+        scrollToAndHighlight(validationError.element);
+        showErrorPopup(validationError.message);
+        return;
+      }
+      
+      // Get form data
+      const customerName = document.getElementById('modalCustomerName').value;
+      const customerPhone = document.getElementById('modalCustomerPhone').value;
+      const customerAddress = document.getElementById('modalCustomerAddress').value;
+      const poskod = document.getElementById('modalPoskod').value;
+      const customerState = document.getElementById('modalCustomerState').value;
+      const paymentMethod = document.getElementById('payment').value;
+      
+      // Get product quantities
+      const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
+      const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
+      
+      // Determine product and quantity
+      let product = '';
+      let quantity = 0;
+      
+      if (ga110Qty > 0 && ga100Qty > 0) {
+        product = 'GA-110 Hitam & GA-100 Merah';
+        quantity = ga110Qty + ga100Qty;
+      } else if (ga110Qty > 0) {
+        product = 'GA-110 Hitam';
+        quantity = ga110Qty;
+      } else if (ga100Qty > 0) {
+        product = 'GA-100 Merah';
+        quantity = ga100Qty;
+      }
+      
+      // Calculate total
+      let total = 0;
+      if (ga110Qty > 0) total += ga110Qty * 69.90;
+      if (ga100Qty > 0) total += ga100Qty * 69.90;
+      if (paymentMethod === 'COD') total += 5;
+      
+      // Create order data object
+      const orderData = {
+        product,
+        quantity,
+        total,
+        customerName,
+        customerPhone,
+        customerAddress,
+        poskod,
+        customerState,
+        paymentMethod,
+        paymentStatus: paymentMethod === 'COD' ? 'Pending' : 'Pending'
+      };
+      
+      // Show loading overlay
+      document.getElementById('loadingOverlay').classList.remove('hidden');
+      
+      // Close customer info modal
+      document.getElementById('customerInfoModal').classList.remove('active');
+      
+      // Handle different payment methods
+      if (paymentMethod === 'COD') {
+        // Send Telegram notification
+        const success = await sendTelegramNotification(orderData);
+        
+        // Hide loading overlay
+        document.getElementById('loadingOverlay').classList.add('hidden');
+        
+        if (success) {
+          // Show success modal
+          document.getElementById('successMessage').textContent = 
+            'Tempahan berjaya! Kami akan menghubungi anda untuk pengesahan.';
+          document.getElementById('successModal').classList.remove('hidden');
+          
+          // Show COD notification
+          document.getElementById('customerName').textContent = customerName;
+          document.getElementById('productName').textContent = product;
+          document.getElementById('codNotification').classList.remove('hidden');
+          document.getElementById('codNotification').classList.add('opacity-100', 'scale-100', 'translate-x-0');
+          
+          // Hide notification after 5 seconds
+          setTimeout(() => {
+            document.getElementById('codNotification').classList.add('hidden');
+          }, 5000);
+        } else {
+          showErrorPopup('Ralat: Gagal menghantar notifikasi. Sila cuba lagi.');
+        }
+      } else if (paymentMethod === 'Online') {
+        // Store order data in sessionStorage for payment pages
+        sessionStorage.setItem('pendingOrder', JSON.stringify(orderData));
+        
+        // Redirect to ToyyibPay
+        const success = await redirectToToyyibPay(orderData);
+        
+        // Hide loading overlay
+        document.getElementById('loadingOverlay').classList.add('hidden');
+        
+        if (!success) {
+          showErrorPopup('Ralat: Gagal memproses pembayaran. Sila cuba lagi.');
+        }
+      }
+    });
+    
     // Close success modal
     document.getElementById('closeModal').addEventListener('click', function() {
       document.getElementById('successModal').classList.add('hidden');
     });
     
-    // Close error popup
-    document.getElementById('closeErrorPopup').addEventListener('click', function() {
-      hideErrorPopup();
-    });
+    // Initialize review carousel
+    const reviews = [
+      {
+        name: 'Ahmad Faisal',
+        rating: 5,
+        comment: 'Sangat berpuas hati dengan kualiti jam ini. Tahan lasak dan nampak premium.',
+        date: '15/05/2023'
+      },
+      {
+        name: 'Siti Aminah',
+        rating: 5,
+        comment: 'Harga berpatutan untuk jam yang berkualiti tinggi. Penghantaran cepat!',
+        date: '20/05/2023'
+      },
+      {
+        name: 'Mohd Razif',
+        rating: 4,
+        comment: 'Jam yang bagus, cuma packaging boleh lagi baik. Overall puas hati.',
+        date: '25/05/2023'
+      },
+      {
+        name: 'Nurul Huda',
+        rating: 5,
+        comment: 'Saya beli untuk hadiah suami. Dia suka sangat! Recomended.',
+        date: '30/05/2023'
+      },
+      {
+        name: 'Farhan Hakim',
+        rating: 5,
+        comment: 'Kualiti superb, harga mampu milik. Will buy again!',
+        date: '05/06/2023'
+      },
+      {
+        name: 'Linda Salleh',
+        rating: 4,
+        comment: 'Jam cantik dan berat, nampak mahal. Service seller pun baik.',
+        date: '10/06/2023'
+      }
+    ];
     
-    // Quantity selector functionality
-    document.querySelectorAll('.quantity-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const productCard = this.closest('.product-card');
-        const productName = productCard.dataset.product;
-        const quantity = parseInt(this.dataset.quantity);
+    const reviewCarousel = document.getElementById('reviewCarousel');
+    
+    // Create review slides
+    for (let i = 0; i < reviews.length; i += 2) {
+      const slide = document.createElement('div');
+      slide.className = 'review-slide';
+      
+      // Create review cards
+      for (let j = i; j < i + 2 && j < reviews.length; j++) {
+        const review = reviews[j];
+        const card = document.createElement('div');
+        card.className = 'review-card';
         
-        // Update active state
-        productCard.querySelectorAll('.quantity-btn').forEach(b => {
-          b.classList.remove('active');
-        });
-        this.classList.add('active');
-        
-        // Update hidden input
-        if (productName === 'GA-110 Hitam') {
-          document.getElementById('ga110Quantity').value = quantity;
-        } else if (productName === 'GA-100 Merah') {
-          document.getElementById('ga100Quantity').value = quantity;
+        // Create star rating
+        let stars = '';
+        for (let k = 0; k < 5; k++) {
+          if (k < review.rating) {
+            stars += '<i class="fas fa-star"></i>';
+          } else {
+            stars += '<i class="far fa-star"></i>';
+          }
         }
         
-        // Update order summary
-        updateOrderSummary();
-      });
-    });
-    
-    // Payment method change
-    document.getElementById('payment').addEventListener('change', function() {
-      updateOrderSummary();
-    });
-    
-    // Initialize order summary
-    updateOrderSummary();
-    
-    // Video sound toggle
-    document.getElementById('soundButton').addEventListener('click', function() {
-      const video = document.getElementById('productVideo');
-      const soundIcon = this.querySelector('i');
-      const soundIndicator = document.getElementById('soundIndicator');
+        card.innerHTML = `
+          <div class="flex items-center mb-3">
+            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-3">
+              <span class="text-red-600 font-bold">${review.name.charAt(0)}</span>
+            </div>
+            <div>
+              <h4 class="font-bold">${review.name}</h4>
+              <div class="star-rating text-sm">${stars}</div>
+            </div>
+          </div>
+          <p class="text-gray-700 mb-2">${review.comment}</p>
+          <p class="text-gray-500 text-sm">${review.date}</p>
+        `;
+        
+        slide.appendChild(card);
+      }
       
+      reviewCarousel.appendChild(slide);
+    }
+    
+    // Review carousel navigation
+    document.getElementById('prevReview').addEventListener('click', function() {
+      reviewCarousel.scrollBy({ left: -700, behavior: 'smooth' });
+    });
+    
+    document.getElementById('nextReview').addEventListener('click', function() {
+      reviewCarousel.scrollBy({ left: 700, behavior: 'smooth' });
+    });
+    
+    // Video controls
+    const video = document.getElementById('productVideo');
+    const soundButton = document.getElementById('soundButton');
+    const soundIndicator = document.getElementById('soundIndicator');
+    
+    soundButton.addEventListener('click', function() {
       if (video.muted) {
         video.muted = false;
-        soundIcon.classList.remove('fa-volume-mute');
-        soundIcon.classList.add('fa-volume-up');
+        soundButton.innerHTML = '<i class="fas fa-volume-up"></i>';
         soundIndicator.classList.add('show');
         
-        // Hide indicator after 2 seconds
+        // Hide indicator after 3 seconds
         setTimeout(() => {
           soundIndicator.classList.remove('show');
-        }, 2000);
+        }, 3000);
       } else {
         video.muted = true;
-        soundIcon.classList.remove('fa-volume-up');
-        soundIcon.classList.add('fa-volume-mute');
+        soundButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
       }
     });
     
-    // Image zoom functionality
-    document.querySelectorAll('.product-image').forEach(img => {
+    // Image zoom modal
+    const imageZoomModal = document.getElementById('imageZoomModal');
+    const zoomedImage = document.getElementById('zoomedImage');
+    const imageNavPrev = document.getElementById('imageNavPrev');
+    const imageNavNext = document.getElementById('imageNavNext');
+    
+    // Get all product images
+    const productImages = document.querySelectorAll('.product-image');
+    let currentImageIndex = 0;
+    
+    // Open image zoom modal
+    productImages.forEach((img, index) => {
       img.addEventListener('click', function() {
-        const modal = document.getElementById('imageZoomModal');
-        const zoomedImage = document.getElementById('zoomedImage');
-        
+        currentImageIndex = index;
         zoomedImage.src = this.src;
-        modal.classList.add('active');
+        imageZoomModal.classList.add('active');
       });
     });
     
     // Close image zoom modal
     document.querySelector('.image-zoom-close').addEventListener('click', function() {
-      document.getElementById('imageZoomModal').classList.remove('active');
+      imageZoomModal.classList.remove('active');
     });
     
-    // Close image zoom modal when clicking outside the image
-    document.getElementById('imageZoomModal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        this.classList.remove('active');
+    // Navigate images
+    imageNavPrev.addEventListener('click', function() {
+      currentImageIndex = (currentImageIndex - 1 + productImages.length) % productImages.length;
+      zoomedImage.src = productImages[currentImageIndex].src;
+    });
+    
+    imageNavNext.addEventListener('click', function() {
+      currentImageIndex = (currentImageIndex + 1) % productImages.length;
+      zoomedImage.src = productImages[currentImageIndex].src;
+    });
+    
+    // Close modal when clicking outside the image
+    imageZoomModal.addEventListener('click', function(e) {
+      if (e.target === imageZoomModal) {
+        imageZoomModal.classList.remove('active');
       }
     });
     
-    // Initialize review carousel
-    function initializeReviewCarousel() {
-      const reviewCarousel = document.getElementById('reviewCarousel');
-      
-      // Sample review data
-      const reviews = [
-        {
-          name: "Ahmad",
-          rating: 5,
-          comment: "Kualiti jam sangat bagus! Harga berpatutan dan penghantaran pantas.",
-          date: "2 hari lepas"
-        },
-        {
-          name: "Siti",
-          rating: 5,
-          comment: "Jam tahan lasak seperti yang dijanjikan. Sangat berpuas hati!",
-          date: "5 hari lepas"
-        },
-        {
-          name: "Rizal",
-          rating: 4,
-          comment: "Rekaan moden dan kemas. Cuma packaging boleh dipertingkatkan.",
-          date: "1 minggu lepas"
-        },
-        {
-          name: "Farah",
-          rating: 5,
-          comment: "Hadiah sempurna untuk suami! Beli lagi untuk koleksi lain.",
-          date: "3 hari lepas"
-        },
-        {
-          name: "Hakim",
-          rating: 5,
-          comment: "Sudah 3 bulan guna, masih berfungsi dengan baik. Recommened!",
-          date: "2 minggu lepas"
-        },
-        {
-          name: "Lina",
-          rating: 4,
-          comment: "Pembelian yang berbaloi. Jam nampak mewah dan tahan lama.",
-          date: "4 hari lepas"
-        }
-      ];
-      
-      // Clear existing content
-      reviewCarousel.innerHTML = '';
-      
-      // Create review slides
-      for (let i = 0; i < reviews.length; i += 2) {
-        const slide = document.createElement('div');
-        slide.className = 'review-slide';
-        
-        // Add review cards
-        for (let j = 0; j < 2 && i + j < reviews.length; j++) {
-          const review = reviews[i + j];
-          const card = document.createElement('div');
-          card.className = 'review-card';
-          
-          // Create star rating HTML
-          let starsHTML = '';
-          for (let k = 1; k <= 5; k++) {
-            if (k <= review.rating) {
-              starsHTML += '<i class="fas fa-star"></i>';
-            } else {
-              starsHTML += '<i class="far fa-star"></i>';
-            }
-          }
-          
-          card.innerHTML = `
-            <div class="flex items-center mb-3">
-              <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center mr-3">
-                <span class="font-bold">${review.name.charAt(0)}</span>
-              </div>
-              <div>
-                <h4 class="font-bold">${review.name}</h4>
-                <div class="star-rating text-sm">${starsHTML}</div>
-              </div>
-            </div>
-            <p class="text-gray-700 mb-2">${review.comment}</p>
-            <p class="text-gray-500 text-sm">${review.date}</p>
-          `;
-          
-          slide.appendChild(card);
-        }
-        
-        reviewCarousel.appendChild(slide);
-      }
-      
-      // Set up navigation buttons
-      document.getElementById('prevReview').addEventListener('click', function() {
-        reviewCarousel.scrollBy({
-          left: -reviewCarousel.offsetWidth,
-          behavior: 'smooth'
-        });
-      });
-      
-      document.getElementById('nextReview').addEventListener('click', function() {
-        reviewCarousel.scrollBy({
-          left: reviewCarousel.offsetWidth,
-          behavior: 'smooth'
-        });
-      });
-    }
+    // Close error popup
+    document.getElementById('closeErrorPopup').addEventListener('click', hideErrorPopup);
     
-    // Initialize review carousel when page loads
-    initializeReviewCarousel();
+    // Smooth scroll for order now button
+    document.getElementById('orderNowBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('order-section').scrollIntoView({ behavior: 'smooth' });
+    });
     
-    // Fake order notifications
+    // Generate fake order notifications
+    const fakeNames = ['Ahmad', 'Siti', 'Mohd', 'Nurul', 'Farhan', 'Linda', 'Faisal', 'Aminah'];
+    const fakeLocations = ['Kuala Lumpur', 'Selangor', 'Johor', 'Penang', 'Perak', 'Kedah'];
+    const fakeProducts = ['GA-110 Hitam', 'GA-100 Merah'];
+    
     function showFakeOrderNotification() {
-      const names = ['Ahmad', 'Siti', 'Rizal', 'Farah', 'Hakim', 'Lina'];
-      const locations = ['Kuala Lumpur', 'Selangor', 'Johor', 'Penang', 'Perak', 'Kedah'];
-      const products = ['G-SHOCK GA-110 Hitam', 'G-SHOCK GA-100 Merah'];
-      
-      const randomName = names[Math.floor(Math.random() * names.length)];
-      const randomLocation = locations[Math.floor(Math.random() * locations.length)];
-      const randomProduct = products[Math.floor(Math.random() * products.length)];
+      const randomName = fakeNames[Math.floor(Math.random() * fakeNames.length)];
+      const randomLocation = fakeLocations[Math.floor(Math.random() * fakeLocations.length)];
+      const randomProduct = fakeProducts[Math.floor(Math.random() * fakeProducts.length)];
       
       document.getElementById('fakeCustomerName').textContent = randomName;
       document.getElementById('fakeCustomerLocation').textContent = randomLocation;
@@ -1730,74 +1893,33 @@ ${paymentStatusText}
       
       const notification = document.getElementById('fakeOrderNotification');
       notification.classList.remove('hidden');
+      notification.classList.add('opacity-100', 'scale-100', 'translate-x-0');
       
+      // Hide notification after 5 seconds
       setTimeout(() => {
-        notification.classList.remove('translate-x-full', 'scale-95');
-        notification.classList.add('translate-x-0', 'scale-100');
-        notification.style.opacity = '1';
-      }, 100);
-      
-      // Hide after 5 seconds
-      setTimeout(() => {
-        hideFakeOrderNotification();
+        notification.classList.add('hidden');
       }, 5000);
     }
     
     function hideFakeOrderNotification() {
-      const notification = document.getElementById('fakeOrderNotification');
-      notification.classList.add('translate-x-full', 'scale-95');
-      notification.classList.remove('translate-x-0', 'scale-100');
-      notification.style.opacity = '0';
-      
-      setTimeout(() => {
-        notification.classList.add('hidden');
-      }, 300);
-    }
-    
-    // COD notification
-    function showCodNotification() {
-      const notification = document.getElementById('codNotification');
-      notification.classList.remove('hidden');
-      
-      setTimeout(() => {
-        notification.classList.remove('translate-x-full', 'scale-95');
-        notification.classList.add('translate-x-0', 'scale-100');
-        notification.style.opacity = '1';
-      }, 100);
-      
-      // Hide after 5 seconds
-      setTimeout(() => {
-        hideCodNotification();
-      }, 5000);
+      document.getElementById('fakeOrderNotification').classList.add('hidden');
     }
     
     function hideCodNotification() {
-      const notification = document.getElementById('codNotification');
-      notification.classList.add('translate-x-full', 'scale-95');
-      notification.classList.remove('translate-x-0', 'scale-100');
-      notification.style.opacity = '0';
-      
-      setTimeout(() => {
-        notification.classList.add('hidden');
-      }, 300);
+      document.getElementById('codNotification').classList.add('hidden');
     }
     
-    // Show fake order notifications periodically
-    setInterval(showFakeOrderNotification, 15000);
+    // Show fake order notifications at random intervals
+    function scheduleFakeNotification() {
+      const randomTime = Math.floor(Math.random() * 30000) + 10000; // Between 10-40 seconds
+      setTimeout(() => {
+        showFakeOrderNotification();
+        scheduleFakeNotification();
+      }, randomTime);
+    }
     
-    // Show first fake order notification after 5 seconds
-    setTimeout(showFakeOrderNotification, 5000);
-    
-    // Check if there's a pending order in sessionStorage (for payment completion)
-    window.addEventListener('load', function() {
-      // Check if we're returning from payment
-      const urlParams = new URLSearchParams(window.location.search);
-      const paymentStatus = urlParams.get('status');
-      
-      if (paymentStatus === 'success') {
-        handlePaymentCompletion();
-      }
-    });
+    // Start showing fake notifications after 5 seconds
+    setTimeout(scheduleFakeNotification, 5000);
   </script>
 </body>
 </html>
