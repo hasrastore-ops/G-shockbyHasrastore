@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Callback - HasraStore</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .animate-spin-slow {
+      animation: spin 2s linear infinite;
+    }
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white shadow-lg rounded-lg p-8 text-center">
+      <div class="text-blue-500 text-6xl mb-4 animate-spin-slow">
+        <i class="fas fa-cog"></i>
+      </div>
+      <h1 class="text-2xl font-bold text-gray-800 mb-2">Memproses Pembayaran</h1>
+      <p class="text-gray-600 mb-6">Sila tunggu sebentar sementara kami mengesahkan pembayaran anda.</p>
+      
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-left">
+        <h3 class="font-bold text-blue-800 mb-2 flex items-center">
+          <i class="fas fa-info-circle mr-2"></i> Status
+        </h3>
+        <div id="paymentStatus" class="text-sm text-blue-700">
+          <p class="mb-1">Mengesahkan status pembayaran...</p>
+        </div>
+      </div>
+      
+      <div class="text-sm text-gray-500">
+        <p>Anda akan diarahkan secara automatik dalam beberapa saat.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // This page is used by ToyyibPay to send payment status updates
+    window.addEventListener('load', function() {
+      // Get URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const status = urlParams.get('status');
+      const billcode = urlParams.get('billcode');
+      const orderid = urlParams.get('orderid');
+      
+      // Log the payment status (in a real implementation, you would save this to a database)
+      console.log('Payment Status:', status);
+      console.log('Bill Code:', billcode);
+      console.log('Order ID:', orderid);
+      
+      // Update status message
+      const statusElement = document.getElementById('paymentStatus');
+      
+      if (status === '1') {
+        statusElement.innerHTML = '<p class="mb-1 text-green-600"><i class="fas fa-check-circle mr-1"></i> Pembayaran berjaya!</p>';
+        
+        // Get order data from sessionStorage
+        const orderData = JSON.parse(sessionStorage.getItem('pendingOrder'));
+        
+        if (orderData) {
+          // Update payment status
+          orderData.paymentStatus = 'Paid';
+          
+          // Format the date and time
+          const orderDateTime = new Date().toLocaleString('ms-MY', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          
+          // Send Telegram notification with complete delivery details
+          fetch('https://api.telegram.org/bot8294840075:AAHcFX_v7AE6Ys_UOfBdCnctuUJtYRrTGWc/sendMessage', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              chat_id: '642142575',
+              text: `✅ <b>PESANAN BARU - PEMBAYARAN BERJAYA (CALLBACK)</b> ✅
+
+📦 <b>PRODUK:</b> ${orderData.product}
+🔢 <b>KUANTITI:</b> ${orderData.quantity}
+💰 <b>JUMLAH:</b> RM${orderData.total}
+
+👤 <b>MAKLUMAT PELANGGAN:</b>
+📝 <b>Nama:</b> ${orderData.customerName}
+📱 <b>No Telefon:</b> ${orderData.customerPhone}
+🏠 <b>Alamat:</b> ${orderData.customerAddress}
+📮 <b>Poskod:</b> ${orderData.poskod}
+🗺️ <b>Negeri:</b> ${orderData.customerState}
+
+💳 <b>JENIS PEMBAYARAN:</b> ${orderData.paymentMethod}
+📅 <b>MASA:</b> ${orderDateTime}
+🔖 <b>BILL CODE:</b> ${billcode}
+
+⚠️ <b>SILA PROSESKAN PESANAN INI SECEPAT MUNGKIN</b>`,
+              parse_mode: 'HTML'
+            })
+          }).then(response => response.json())
+            .then(data => {
+              if (data.ok) {
+                console.log('Telegram notification sent successfully');
+              } else {
+                console.error('Failed to send Telegram notification:', data);
+              }
+            })
+            .catch(error => {
+              console.error('Error sending Telegram notification:', error);
+            });
+          
+          // Clear sessionStorage
+          sessionStorage.removeItem('pendingOrder');
+        }
+        
+        // Redirect to success page after 3 seconds
+        setTimeout(() => {
+          window.location.href = 'payment-success.html';
+        }, 3000);
+      } else {
+        statusElement.innerHTML = '<p class="mb-1 text-red-600"><i class="fas fa-times-circle mr-1"></i> Pembayaran gagal.</p>';
+        
+        // Get order data from sessionStorage
+        const orderData = JSON.parse(sessionStorage.getItem('pendingOrder'));
+        
+        if (orderData) {
+          // Format the date and time
+          const orderDateTime = new Date().toLocaleString('ms-MY', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          
+          // Send Telegram notification about failed payment
+          fetch('https://api.telegram.org/bot8294840075:AAHcFX_v7AE6Ys_UOfBdCnctuUJtYRrTGWc/sendMessage', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              chat_id: '642142575',
+              text: `❌ <b>PESANAN BARU - PEMBAYARAN GAGAL (CALLBACK)</b> ❌
+
+📦 <b>PRODUK:</b> ${orderData.product}
+🔢 <b>KUANTITI:</b> ${orderData.quantity}
+💰 <b>JUMLAH:</b> RM${orderData.total}
+
+👤 <b>MAKLUMAT PELANGGAN:</b>
+📝 <b>Nama:</b> ${orderData.customerName}
+📱 <b>No Telefon:</b> ${orderData.customerPhone}
+🏠 <b>Alamat:</b> ${orderData.customerAddress}
+📮 <b>Poskod:</b> ${orderData.poskod}
+🗺️ <b>Negeri:</b> ${orderData.customerState}
+
+💳 <b>JENIS PEMBAYARAN:</b> ${orderData.paymentMethod}
+📅 <b>MASA:</b> ${orderDateTime}
+🔖 <b>BILL CODE:</b> ${billcode}
+
+⚠️ <b>SILA HUBUNGI PELANGGAN UNTUK PENGESAHAN</b>`,
+              parse_mode: 'HTML'
+            })
+          }).then(response => response.json())
+            .then(data => {
+              if (data.ok) {
+                console.log('Telegram notification sent successfully');
+              } else {
+                console.error('Failed to send Telegram notification:', data);
+              }
+            })
+            .catch(error => {
+              console.error('Error sending Telegram notification:', error);
+            });
+          
+          // Clear sessionStorage
+          sessionStorage.removeItem('pendingOrder');
+        }
+        
+        // Redirect to failed page after 3 seconds
+        setTimeout(() => {
+          window.location.href = 'payment-failed.html';
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>

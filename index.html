@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HasraStore - G-SHOCK Promosi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    /* All existing styles remain unchanged */
+    html {
+      scroll-behavior: smooth;
+    }
+    /* Custom styles for vertical video container */
+    .vertical-video-container {
+      position: relative;
+      width: 100%;
+      max-width: 360px; /* 9:16 aspect ratio width */
+      height: 640px; /* 9:16 aspect ratio height */
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 0.75rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    .vertical-video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+      .vertical-video-container {
+        max-width: 280px;
+        height: 498px;
+      }
+    }
+    /* Video controls */
+    .video-controls {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none; /* Allow clicks to pass through to the video */
+    }
+    .sound-button {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      pointer-events: auto; /* Make button clickable */
+    }
+    .sound-button:hover {
+      background-color: rgba(255, 255, 255, 0.9);
+      transform: scale(1.05);
+    }
+    .sound-button i {
+      font-size: 18px;
+      color: #e53e3e;
+    }
+    .video-info {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      color: white;
+      font-size: 14px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+      pointer-events: auto;
+    }
+    .sound-indicator {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(229, 62, 62, 0.8);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .sound-indicator.show {
+      opacity: 1;
+    }
+    .sound-indicator i {
+      margin-right: 5px;
+    }
+    
+    /* Image zoom modal styles */
+    .image-zoom-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+    }
+    
+    .image-zoom-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .image-zoom-modal img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+      transform: scale(0.8);
+      transition: transform 0.3s ease;
+    }
+    
+    .image-zoom-modal.active img {
+      transform: scale(1);
+    }
+    
+    .image-zoom-close {
+      position: absolute;
+      top: 20px;
+      right: 40px;
+      color: white;
+      font-size: 40px;
+      cursor: pointer;
+      z-index: 1001;
+    }
+    
+    /* Product image cursor style */
+    .product-image {
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    
+    .product-image:hover {
+      transform: scale(1.03);
+    }
+    
+    /* Highlight style for empty fields */
+    .highlight-field {
+      border: 2px solid #e53e3e !important;
+      box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.2) !important;
+    }
+    
+    /* Order Now Button Animation */
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7);
+      }
+      70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(251, 191, 36, 0);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(251, 191, 36, 0);
+      }
+    }
+    
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+    
+    /* Countdown Timer Animation */
+    @keyframes countdown-urgent {
+      0%, 100% {
+        color: #ffffff;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+      }
+      50% {
+        color: #fbbf24;
+        text-shadow: 0 0 10px rgba(251, 191, 36, 0.8);
+      }
+    }
+    
+    .countdown-urgent {
+      animation: countdown-urgent 1.5s infinite;
+      font-weight: bold;
+    }
+    
+    /* Countdown container animation */
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-3px);
+      }
+      20%, 40%, 60%, 80% {
+        transform: translateX(3px);
+      }
+    }
+    
+    .countdown-container {
+      animation: shake 3s infinite;
+      display: inline-block;
+    }
+    
+    /* Review carousel styles */
+    .review-carousel {
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+      overflow-x: auto;
+      overflow-y: hidden;
+      display: flex;
+    }
+    
+    .review-carousel::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera */
+    }
+    
+    .review-slide {
+      scroll-snap-align: start;
+      flex: 0 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 10px;
+    }
+    
+    .review-card {
+      transition: transform 0.3s ease;
+      background: white;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    
+    .review-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    /* Star rating styles */
+    .star-rating {
+      color: #fbbf24;
+    }
+    
+    /* Review section container */
+    .review-section {
+      height: 550px; /* Fixed height for 2x2 grid */
+      position: relative;
+    }
+    
+    /* Responsive review styles */
+    @media (min-width: 768px) {
+      .review-slide {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        width: 700px;
+        padding: 0 20px;
+      }
+      
+      .review-card {
+        margin-bottom: 0;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .review-section {
+        height: 650px; /* Increased height for mobile */
+      }
+      
+      .review-slide {
+        padding: 0 15px;
+      }
+      
+      .review-card {
+        min-height: 280px; /* Taller cards for mobile */
+      }
+    }
+    
+    /* Order section styles */
+    .product-card {
+      background: white;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-3px);
+    }
+    
+    .product-card img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 0.5rem;
+      margin: 0 auto 0.75rem;
+      display: block;
+    }
+    
+    .quantity-selector {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    
+    .quantity-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #e5e7eb;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .quantity-btn.active {
+      background: #ef4444;
+      color: white;
+      border-color: #ef4444;
+    }
+    
+    .quantity-btn:hover {
+      border-color: #ef4444;
+    }
+    
+    .order-summary {
+      background: #f9fafb;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .order-summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+    
+    .order-summary-total {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      padding-top: 0.5rem;
+      border-top: 1px solid #e5e7eb;
+      margin-top: 0.5rem;
+    }
+    
+    /* Customer info modal styles */
+    .customer-info-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+    }
+    
+    .customer-info-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .customer-info-modal-content {
+      background: white;
+      border-radius: 0.75rem;
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    
+    .customer-info-modal.active .customer-info-modal-content {
+      transform: scale(1);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .modal-body {
+      padding: 1rem;
+    }
+    
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      padding: 1rem;
+      border-top: 1px solid #e5e7eb;
+    }
+    
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #6b7280;
+    }
+    
+    .close-modal:hover {
+      color: #374151;
+    }
+    
+    /* Payment status styles */
+    .payment-status {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      font-weight: bold;
+    }
+    
+    .payment-status.success {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    
+    .payment-status.failed {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+    
+    /* Error popup styles */
+    .error-popup {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #f87171;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      z-index: 1050;
+      max-width: 350px;
+      transform: translateX(150%);
+      transition: transform 0.3s ease;
+    }
+    
+    .error-popup.show {
+      transform: translateX(0);
+    }
+    
+    .error-popup-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .error-popup-title {
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+    }
+    
+    .error-popup-title i {
+      margin-right: 0.5rem;
+    }
+    
+    .error-popup-close {
+      background: none;
+      border: none;
+      color: #991b1b;
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 0;
+      line-height: 1;
+    }
+    
+    .error-popup-message {
+      font-size: 0.9rem;
+    }
+    
+    /* Payment redirect modal styles */
+    .payment-redirect-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1050;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+    }
+    
+    .payment-redirect-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .payment-redirect-modal-content {
+      background: white;
+      border-radius: 0.75rem;
+      width: 90%;
+      max-width: 500px;
+      padding: 2rem;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+      text-align: center;
+    }
+    
+    .payment-redirect-modal.active .payment-redirect-modal-content {
+      transform: scale(1);
+    }
+    
+    .animate-pulse-slow {
+      animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: .5;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <!-- Header -->
+  <header class="fixed top-0 left-0 w-full bg-red-600 text-white py-3 shadow-lg z-50">
+    <div class="text-center font-bold text-lg">
+      HasraStore - Promosi Sehingga 70%
+    </div>
+  </header>
+  <main class="pt-16">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-red-700 via-black to-red-500 text-white py-12 px-6 text-center relative">
+      <h1 class="text-3xl md:text-4xl font-extrabold mb-4 drop-shadow-lg">G-SHOCK 1:1 Premium By HasraStore</h1>
+      <div class="bg-white text-red-600 inline-block px-6 py-2 rounded-lg shadow-lg font-bold text-lg mb-4 countdown-container">
+        Promosi Tamat Dalam <span id="countdown" class="font-mono countdown-urgent">30:00</span>
+      </div>
+      <p class="text-xl font-semibold mb-6">Harga Asal <span class="line-through">RM256</span> → <span class="text-yellow-300">RM69.90 Sahaja</span></p>
+      <a href="#order-section" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 px-6 rounded-full shadow-lg transition pulse-animation" id="orderNowBtn">
+        Order Sekarang
+      </a>
+    </section>
+ <!-- Video Section -->
+    <section class="py-10 px-6 text-center">
+      <h2 class="text-2xl font-bold mb-6">🎥 Saksikan Video Produk</h2>
+      <div class="vertical-video-container">
+        <!-- Replace YOUR_IMGUR_VIDEO_ID with your actual Imgur video ID -->
+        <video 
+          id="productVideo"
+          autoplay 
+          muted 
+          loop 
+          playsinline
+          poster="https://i.imgur.com/YOUR_IMGUR_VIDEO_IDh.jpg" <!-- Replace with your video thumbnail -->
+        >
+          <source src="https://i.imgur.com/qxiIBKv.mp4" type="video/mp4">
+          Browser anda tidak menyokong video.
+        </video>
+        <div id="videoControls" class="video-controls">
+          <div id="soundButton" class="sound-button">
+            <i class="fas fa-volume-mute"></i>
+          </div>
+          <div class="video-info">
+            Klik butang bunyi untuk aktifkan audio
+          </div>
+          <div id="soundIndicator" class="sound-indicator">
+            <i class="fas fa-volume-up"></i>
+            <span id="soundText">Audio diaktifkan</span>
+          </div>
+        </div>
+      </div>
+    </section>
+        <!-- Masalah Customer Section -->
+    <section class="py-12 px-6 bg-gray-100">
+      <h3 class="text-2xl font-bold text-center mb-8">❌ Masalah Biasa Pelanggan</h3>
+      <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-xl shadow-md text-center">
+          Jam cepat rosak bila selalu pakai harian
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md text-center">
+          Harga terlalu mahal untuk jam tahan lama
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md text-center">
+          Susah nak cari hadiah sesuai untuk orang tersayang
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md text-center">
+          Jam nampak besar tapi tak tahan hentakan
+        </div>
+      </div>
+    </section>
+    <!-- Penyelesaian Section -->
+    <section class="bg-gradient-to-r from-red-600 to-red-400 py-12 px-6 text-white">
+      <h3 class="text-3xl font-extrabold text-center mb-8 drop-shadow-lg">✅ Penyelesaian Dari HasraStore</h3>
+      <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white text-black rounded-xl shadow-lg p-6 text-center">
+          <p class="font-semibold text-lg">1. Tahan Lasak & Kalis Air</p>
+          <p class="text-sm">Tak perlu risau jam cepat rosak, setiap unit diuji untuk menahan hentakan dan kalis air.</p>
+        </div>
+        <div class="bg-white text-black rounded-xl shadow-lg p-6 text-center">
+          <p class="font-semibold text-lg">2. Harga Berpatutan</p>
+          <p class="text-sm">Daripada RM256 kini hanya RM69.90 sahaja — mampu milik tanpa kompromi pada kualiti.</p>
+        </div>
+        <div class="bg-white text-black rounded-xl shadow-lg p-6 text-center">
+          <p class="font-semibold text-lg">3. Gaya & Keyakinan</p>
+          <p class="text-sm">Rekaan moden sesuai dipakai ke mana-mana, buat anda nampak lebih bergaya.</p>
+        </div>
+        <div class="bg-white text-black rounded-xl shadow-lg p-6 text-center">
+          <p class="font-semibold text-lg">4. Mudah & Pantas</p>
+          <p class="text-sm">Tempahan mudah, penghantaran pantas terus ke pintu rumah anda.</p>
+        </div>
+      </div>
+    </section>
+    <!-- Produk Section -->
+    <section class="py-12 px-6">
+      <h2 class="text-2xl font-bold text-center mb-8">📦 Pilihan Produk</h2>
+      <div class="max-w-6xl mx-auto space-y-12">
+        <!-- Produk 1 -->
+        <div>
+          <h3 class="text-xl font-semibold mb-4">G-SHOCK GA-110 Hitam</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <img src="https://i.imgur.com/KCEIin8.png?w=600" class="rounded-lg shadow-lg w-full product-image" alt="GA-110 Hitam">
+              <div class="grid grid-cols-3 gap-4">
+                <img src="https://i.imgur.com/82n8ej1.png?w=200" class="rounded-lg shadow product-image" alt="">
+                <img src="https://i.imgur.com/Z5nRyQn.png?w=200" class="rounded-lg shadow product-image" alt="">
+                <img src="https://i.imgur.com/1zcsXJF.jpeg?w=200" class="rounded-lg shadow product-image" alt="">
+              </div>
+          </div>
+        </div>
+        <!-- Produk 2 -->
+        <div>
+          <h3 class="text-xl font-semibold mb-4">G-SHOCK GA-100 Merah</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <img src="https://i.imgur.com/n9UdOUF.jpeg?w=600" class="rounded-lg shadow-lg w-full product-image" alt="GA-100 Merah">
+              <div class="grid grid-cols-3 gap-4">
+                <img src="https://i.imgur.com/xS9nZZI.jpeg?w=200" class="rounded-lg shadow product-image" alt="">
+                <img src="https://i.imgur.com/e1dLyYe.jpeg?w=200" class="rounded-lg shadow product-image" alt="">
+                <img src="https://i.imgur.com/QdYKgfM.jpeg?w=200" class="rounded-lg shadow product-image" alt="">
+              </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Review Section -->
+    <section class="py-12 px-6 bg-gray-100">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-8">
+          <h2 class="text-2xl font-bold mb-2">⭐ Apa Kata Pelanggan</h2>
+          <div class="flex items-center justify-center space-x-2">
+            <div class="star-rating">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+            </div>
+            <p class="text-lg font-semibold">4.9/5.0 dari 1,342 Review</p>
+          </div>
+        </div>
+        
+        <div class="relative review-section">
+          <div id="reviewCarousel" class="review-carousel">
+            <!-- Review slides will be dynamically added here -->
+          </div>
+          
+          <!-- Carousel Navigation -->
+          <button id="prevReview" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-md z-10 hidden md:block">
+            <i class="fas fa-chevron-left text-red-600"></i>
+          </button>
+          <button id="nextReview" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-md z-10 hidden md:block">
+            <i class="fas fa-chevron-right text-red-600"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+    <!-- Order Form -->
+    <section id="order-section" class="py-12 px-6 bg-white scroll-mt-20">
+      <h2 class="text-3xl font-extrabold text-center mb-6">🛒 Borang Tempahan</h2>
+      <form class="max-w-2xl mx-auto bg-gray-50 p-6 rounded-xl shadow space-y-4" id="orderForm">
+        <!-- Product Selection with Images -->
+        <div>
+          <label class="font-semibold block mb-2">Pilih Produk & Kuantiti</label>
+          
+          <!-- Product 1: GA-110 Hitam -->
+          <div class="product-card" data-product="GA-110 Hitam">
+            <img src="https://i.imgur.com/KCEIin8.png?w=200" alt="GA-110 Hitam">
+            <h3 class="font-bold">G-SHOCK GA-110 Hitam</h3>
+            <p class="text-sm text-gray-600 mb-1">RM69.90</p>
+            <p class="text-xs text-gray-500 mb-2">Bilangan</p>
+            <div class="quantity-selector">
+              <div class="quantity-btn" data-quantity="1">1</div>
+              <div class="quantity-btn" data-quantity="2">2</div>
+            </div>
+          </div>
+          
+          <!-- Product 2: GA-100 Merah -->
+          <div class="product-card" data-product="GA-100 Merah">
+            <img src="https://i.imgur.com/n9UdOUF.jpeg?w=200" alt="GA-100 Merah">
+            <h3 class="font-bold">G-SHOCK GA-100 Merah</h3>
+            <p class="text-sm text-gray-600 mb-1">RM69.90</p>
+            <p class="text-xs text-gray-500 mb-2">Bilangan</p>
+            <div class="quantity-selector">
+              <div class="quantity-btn" data-quantity="1">1</div>
+              <div class="quantity-btn" data-quantity="2">2</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="order-summary">
+          <h3 class="font-semibold mb-2">Ringkasan Pesanan</h3>
+          <div id="orderSummaryContent">
+            <div class="order-summary-item">
+              <span>Tiada produk dipilih</span>
+              <span>RM0.00</span>
+            </div>
+          </div>
+          <div class="order-summary-total">
+            <span>Jumlah</span>
+            <span id="totalAmount">RM0.00</span>
+          </div>
+        </div>
+        
+        <!-- Payment -->
+        <div>
+          <label class="font-semibold block mb-2">Pilihan Pembayaran</label>
+          <select id="payment" required class="w-full border rounded p-2">
+            <option value="">-- Pilih Pembayaran --</option>
+            <option value="COD">COD-Barang Sampai Baru Bayar (+RM5)</option>
+            <option value="Online">Online Payment (Fast Shipping)</option>
+          </select>
+        </div>
+        
+        <!-- Hidden inputs to store product quantities -->
+        <input type="hidden" id="ga110Quantity" value="0">
+        <input type="hidden" id="ga100Quantity" value="0">
+        
+        <!-- Submit Button -->
+        <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-lg font-bold hover:bg-red-700 transition">
+          ORDER
+        </button>
+      </form>
+    </section>
+  </main>
+  
+  <!-- Customer Info Modal -->
+  <div id="customerInfoModal" class="customer-info-modal">
+    <div class="customer-info-modal-content">
+      <div class="modal-header">
+        <h3 class="text-lg font-bold">Maklumat Pelanggan</h3>
+        <button class="close-modal" id="closeCustomerModal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="customerInfoForm" class="space-y-4">
+          <!-- Personal Details -->
+          <div class="grid grid-cols-1 gap-4">
+            <div>
+              <label class="font-semibold block mb-2">Nama</label>
+              <input type="text" id="modalCustomerName" required class="w-full border rounded p-2" placeholder="Nama penuh">
+            </div>
+            <div>
+              <label class="font-semibold block mb-2">No Telefon</label>
+              <input type="tel" id="modalCustomerPhone" required class="w-full border rounded p-2" placeholder="0123456789">
+            </div>
+          </div>
+          
+          <!-- Address -->
+          <div>
+            <label class="font-semibold block mb-2">Alamat</label>
+            <textarea id="modalCustomerAddress" required class="w-full border rounded p-2" rows="3"></textarea>
+          </div>
+          
+          <!-- Postcode -->
+          <div>
+            <label class="font-semibold block mb-2">Poskod</label>
+            <input type="text" id="modalPoskod" required class="w-full border rounded p-2" placeholder="43000">
+          </div>
+          
+          <!-- State -->
+          <div>
+            <label class="font-semibold block mb-2">Negeri</label>
+            <select id="modalCustomerState" required class="w-full border rounded p-2">
+              <option value="">-- Pilih Negeri --</option>
+              <option>Selangor</option><option>Kuala Lumpur</option><option>Johor</option>
+              <option>Kedah</option><option>Penang</option><option>Perak</option>
+              <option>Kelantan</option><option>Terengganu</option><option>Melaka</option>
+              <option>Negeri Sembilan</option><option>Pahang</option><option>Sabah</option>
+              <option>Sarawak</option><option>Perlis</option><option>Labuan</option>
+            </select>
+          </div>
+          
+          <!-- Confirmation -->
+          <div class="flex items-center">
+            <input type="checkbox" required class="mr-2" id="modalConfirmation">
+            <label for="modalConfirmation" class="text-sm">Saya sahkan semua maklumat adalah betul</label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50" id="cancelCustomerInfo">
+          Batal
+        </button>
+        <button type="button" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700" id="confirmCustomerInfo">
+          Confirm Order
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Notification Popup for Fake Orders -->
+  <div id="fakeOrderNotification" class="fixed bottom-6 right-6 bg-white rounded-lg shadow-lg p-4 w-80 z-50 opacity-0 scale-95 transform translate-x-full transition-all duration-300 hidden">
+    <div class="flex items-start justify-between">
+      <div class="flex items-center">
+        <i class="fas fa-shopping-bag text-green-500 mr-3 text-xl"></i>
+        <div>
+          <p class="font-medium"><span id="fakeCustomerName"></span> baru sahaja memesan <span id="fakeProductName"></span></p>
+          <p class="text-xs text-gray-600">Dari <span id="fakeCustomerLocation"></span></p>
+        </div>
+      </div>
+      <button class="text-gray-400 hover:text-gray-600 ml-2" onclick="hideFakeOrderNotification()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Notification Popup for COD Orders -->
+  <div id="codNotification" class="fixed bottom-6 right-6 bg-white rounded-lg shadow-lg p-4 w-80 z-50 opacity-0 scale-95 transform translate-x-full transition-all duration-300 hidden">
+    <div class="flex items-start justify-between">
+      <div class="flex items-center">
+        <i class="fas fa-shopping-bag text-green-500 mr-3 text-xl"></i>
+        <div>
+          <p class="font-medium"><span id="customerName"></span> telah order <span id="productName"></span> melalui COD</p>
+          <p class="text-xs text-gray-600">Barang akan dihantar apabila pembayaran diterima</p>
+        </div>
+      </div>
+      <button class="text-gray-400 hover:text-gray-600 ml-2" onclick="hideCodNotification()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Image Zoom Modal -->
+  <div id="imageZoomModal" class="image-zoom-modal">
+    <span class="image-zoom-close">&times;</span>
+    <img id="zoomedImage" src="" alt="">
+  </div>
+  
+  <!-- Success Modal -->
+  <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+      <div class="text-center">
+        <i class="fas fa-check-circle text-green-500 text-5xl mb-4"></i>
+        <h3 class="text-2xl font-bold mb-2">Tempahan Berjaya!</h3>
+        <p id="successMessage" class="mb-6">Terima kasih atas tempahan anda. Kami akan menghubungi anda tidak lama lagi.</p>
+        <button id="closeModal" class="bg-red-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-red-700 transition">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Payment Redirect Modal -->
+  <div id="paymentRedirectModal" class="payment-redirect-modal">
+    <div class="payment-redirect-modal-content">
+      <i class="fas fa-credit-card text-blue-500 text-5xl mb-4"></i>
+      <h3 class="text-2xl font-bold mb-2">Pembayaran Dalam Talian</h3>
+      <p class="mb-6">Klik butang di bawah untuk meneruskan ke pembayaran.</p>
+      <button id="manualRedirectBtn" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition mb-4">
+        Teruskan Pembayaran
+      </button>
+      <p class="text-sm text-gray-600">Jika butang tidak berfungsi, sila cuba lagi atau hubungi kami.</p>
+    </div>
+  </div>
+  
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-8 flex flex-col items-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600 mb-4"></div>
+      <p class="text-lg font-semibold">Memproses tempahan anda...</p>
+    </div>
+  </div>
+  
+  <!-- Payment Status Display -->
+  <div id="paymentStatusDisplay" class="hidden">
+    <div id="paymentStatusMessage" class="payment-status"></div>
+  </div>
+  
+  <!-- Error Popup -->
+  <div id="errorPopup" class="error-popup">
+    <div class="error-popup-header">
+      <div class="error-popup-title">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>Ralat</span>
+      </div>
+      <button class="error-popup-close" id="closeErrorPopup">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="error-popup-message" id="errorMessage">
+      mesej ralat
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script>
+    // Telegram Bot Configuration - Replace with your actual credentials
+    const TELEGRAM_CONFIG = {
+      botToken: '8294840075:AAHcFX_v7AE6Ys_UOfBdCnctuUJtYRrTGWc',
+      chatId: '642142575'
+    };
+    
+    // ToyyibPay configuration - Updated with provided credentials
+    const TOYYIBPAY_CONFIG = {
+      userSecretKey: 'b2kcp05o-b5m0-q000-55i7-w3j57riufv7h', // Provided secret key
+      categoryCode: 'ltigdivv', // Provided category code
+      callbackUrl: 'https://yourdomain.com/payment-callback.html', // Replace with your callback URL
+      returnUrl: 'https://yourdomain.com/payment-success.html',    // Replace with your return URL
+      failedUrl: 'https://yourdomain.com/payment-failed.html'      // Replace with your failed URL
+    };
+    
+    // Countdown Timer 30 minutes
+    let timer = 30 * 60;
+    const countdownEl = document.getElementById("countdown");
+    
+    // Function to update countdown and add urgency when time is running out
+    function updateCountdown() {
+      let minutes = Math.floor(timer / 60);
+      let seconds = timer % 60;
+      countdownEl.textContent = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      
+      // Add more urgency when less than 5 minutes remain
+      if (timer <= 300 && timer > 0) {
+        countdownEl.style.color = "#ef4444";
+        countdownEl.style.fontSize = "1.2rem";
+        
+        // Add more frequent animation
+        countdownEl.style.animation = "countdown-urgent 0.8s infinite";
+      }
+      
+      if (timer > 0) timer--;
+    }
+    
+    // Update countdown every second
+    setInterval(updateCountdown, 1000);
+    
+    // Fungsi Validasi Poskod
+    function validatePostcode(postcode) {
+      const regex = /^\d{5}$/;
+      return regex.test(postcode);
+    }
+    
+    // Function to show error popup
+    function showErrorPopup(message) {
+      const errorPopup = document.getElementById('errorPopup');
+      const errorMessage = document.getElementById('errorMessage');
+      
+      errorMessage.textContent = message;
+      errorPopup.classList.add('show');
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        errorPopup.classList.remove('show');
+      }, 5000);
+    }
+    
+    // Function to hide error popup
+    function hideErrorPopup() {
+      const errorPopup = document.getElementById('errorPopup');
+      errorPopup.classList.remove('show');
+    }
+    
+    // Paparkan ralat dengan gaya UI (legacy function)
+    function showError(message) {
+      showErrorPopup(message);
+    }
+    
+    function hideError() {
+      hideErrorPopup();
+    }
+    
+    // Function to scroll to and highlight an element
+    function scrollToAndHighlight(element) {
+      // Remove any existing highlights
+      document.querySelectorAll('.highlight-field').forEach(el => {
+        el.classList.remove('highlight-field');
+      });
+      
+      // Add highlight to the current element
+      element.classList.add('highlight-field');
+      
+      // Scroll to the element
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // Focus on the element if it's an input
+      if (element.tagName === 'INPUT' || element.tagName === 'SELECT' || element.tagName === 'TEXTAREA') {
+        element.focus();
+      }
+      
+      // Remove highlight after 3 seconds
+      setTimeout(() => {
+        element.classList.remove('highlight-field');
+      }, 3000);
+    }
+    
+    // Function to validate form and return the first invalid field
+    function validateForm() {
+      const requiredFields = [
+        { id: 'modalCustomerName', name: 'Nama' },
+        { id: 'modalCustomerPhone', name: 'No Telefon' },
+        { id: 'modalCustomerAddress', name: 'Alamat' },
+        { id: 'modalPoskod', name: 'Poskod' },
+        { id: 'modalCustomerState', name: 'Negeri' }
+      ];
+      
+      // Check if at least one product is selected
+      const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
+      const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
+      
+      if (ga110Qty === 0 && ga100Qty === 0) {
+        return { element: document.querySelector('.product-card'), message: 'Sila pilih sekurang-kurangnya satu produk' };
+      }
+      
+      // Check confirmation checkbox
+      const confirmationCheckbox = document.getElementById('modalConfirmation');
+      if (!confirmationCheckbox.checked) {
+        return { element: confirmationCheckbox, message: 'Sila sahkan semua maklumat adalah betul' };
+      }
+      
+      // Check required fields
+      for (const field of requiredFields) {
+        const element = document.getElementById(field.id);
+        if (!element.value.trim()) {
+          return { element, message: `Sila isi ${field.name}` };
+        }
+      }
+      
+      // Validate postcode format
+      const poskodValue = document.getElementById('modalPoskod').value.trim();
+      if (!validatePostcode(poskodValue)) {
+        return { 
+          element: document.getElementById('modalPoskod'), 
+          message: 'Poskod tidak sah! Pastikan format 5 digit angka sahaja.' 
+        };
+      }
+      
+      return null; // All fields are valid
+    }
+    
+    // Fungsi untuk menghantar notifikasi ke Telegram
+    async function sendTelegramNotification(orderData) {
+      const paymentStatusText = orderData.paymentStatus === 'Paid' ? 
+        '✅ <b>TELAH DIBAYAR</b>' : 
+        '⏳ <b>MENUNGGU PEMBAYARAN</b>';
+        
+      // Format the date and time
+      const orderDateTime = new Date().toLocaleString('ms-MY', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+        
+      const message = `
+🆕 <b>PESANAN BARU</b> 🆕
+${paymentStatusText}
+
+📦 <b>PRODUK:</b> ${orderData.product}
+🔢 <b>KUANTITI:</b> ${orderData.quantity}
+💰 <b>JUMLAH:</b> RM${orderData.total}
+
+👤 <b>MAKLUMAT PELANGGAN:</b>
+📝 <b>Nama:</b> ${orderData.customerName}
+📱 <b>No Telefon:</b> ${orderData.customerPhone}
+🏠 <b>Alamat:</b> ${orderData.customerAddress}
+📮 <b>Poskod:</b> ${orderData.poskod}
+🗺️ <b>Negeri:</b> ${orderData.customerState}
+
+💳 <b>JENIS PEMBAYARAN:</b> ${orderData.paymentMethod}
+📅 <b>MASA:</b> ${orderDateTime}
+
+⚠️ <b>SILA PROSESKAN PESANAN INI SECEPAT MUNGKIN</b>
+      `;
+      
+      const url = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`;
+      const payload = {
+        chat_id: TELEGRAM_CONFIG.chatId,
+        text: message,
+        parse_mode: 'HTML'
+      };
+      
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+        
+        const data = await response.json();
+        
+        if (data.ok) {
+          return true;
+        } else {
+          console.error('Telegram API error:', data);
+          return false;
+        }
+      } catch (error) {
+        console.error('Error sending Telegram notification:', error);
+        return false;
+      }
+    }
+    
+    // Fungsi untuk menghasilkan billNo untuk ToyyibPay
+    function generateBillNo() {
+      const timestamp = Date.now();
+      const random = Math.floor(Math.random() * 1000);
+      return `HS${timestamp}${random}`;
+    }
+    
+    // Function to show payment redirect modal
+    function showPaymentRedirectModal(billCode) {
+      const modal = document.getElementById('paymentRedirectModal');
+      modal.classList.add('active');
+      
+      // Set up the redirect button
+      document.getElementById('manualRedirectBtn').onclick = function() {
+        window.location.href = `https://toyyibpay.com/${billCode}`;
+      };
+    }
+    
+    // Fungsi untuk redirect ke ToyyibPay
+    async function redirectToToyyibPay(orderData) {
+      console.log('Starting ToyyibPay redirect with order data:', orderData);
+      
+      const billNo = generateBillNo();
+      const amount = orderData.total;
+      
+      // Extract product code for shorter bill name
+      let productCode = orderData.product;
+      if (productCode === "GA-110 Hitam") {
+        productCode = "GA110";
+      } else if (productCode === "GA-100 Merah") {
+        productCode = "GA100";
+      }
+      
+      // Calculate expiry date (3 days from now)
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 3);
+      const formattedExpiryDate = 
+        `${expiryDate.getDate().toString().padStart(2, '0')}-` +
+        `${(expiryDate.getMonth() + 1).toString().padStart(2, '0')}-` +
+        `${expiryDate.getFullYear()} ` +
+        `${expiryDate.getHours().toString().padStart(2, '0')}:` +
+        `${expiryDate.getMinutes().toString().padStart(2, '0')}:` +
+        `${expiryDate.getSeconds().toString().padStart(2, '0')}`;
+
+      // Prepare data for ToyyibPay API
+      const formData = new FormData();
+      formData.append('userSecretKey', TOYYIBPAY_CONFIG.userSecretKey);
+      formData.append('categoryCode', TOYYIBPAY_CONFIG.categoryCode);
+      formData.append('billName', `G-SHOCK ${productCode}`);
+      formData.append('billDescription', `Pembelian ${orderData.quantity} unit ${orderData.product}`);
+      formData.append('billPriceSetting', 1); // Fixed amount
+      formData.append('billPayorInfo', 1); // Require payer information
+      formData.append('billAmount', amount * 100); // Convert to cents (RM69.90 = 6990)
+      formData.append('billReturnUrl', TOYYIBPAY_CONFIG.returnUrl);
+      formData.append('billCallbackUrl', TOYYIBPAY_CONFIG.callbackUrl);
+      formData.append('billExternalReferenceNo', billNo);
+      formData.append('billTo', orderData.customerName);
+      formData.append('billEmail', 'hasrastore@gmail.com'); // Using your email as default
+      formData.append('billPhone', orderData.customerPhone);
+      formData.append('billSplitPayment', 0); // No split payment
+      formData.append('billSplitPaymentArgs', '');
+      formData.append('billPaymentChannel', 0); // All payment channels
+      formData.append('billContentEmail', 'Terima kasih atas pembelian anda!');
+      formData.append('billChargeToCustomer', 1); // Transaction cost deducted from merchant
+      formData.append('billExpiryDate', formattedExpiryDate); // Bill expires in 3 days
+      
+      try {
+        // Send request to ToyyibPay API
+        const response = await fetch('https://toyyibpay.com/index.php/api/createBill', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.text();
+        
+        // Log the response for debugging
+        console.log('ToyyibPay API response status:', response.status);
+        console.log('ToyyibPay API response text:', result);
+        
+        // Parse the JSON response to get the bill code
+        let responseObj;
+        try {
+          responseObj = JSON.parse(result);
+        } catch (parseError) {
+          console.error('Error parsing JSON response:', parseError);
+          console.error('Raw response:', result);
+          showErrorPopup('Ralat: Respon tidak sah dari pembekal pembayaran. Sila cuba lagi.');
+          return false;
+        }
+        
+        // Try different ways to get the bill code
+        let billCode = null;
+        
+        if (responseObj.BillCode) {
+          billCode = responseObj.BillCode;
+        } else if (Array.isArray(responseObj) && responseObj.length > 0 && responseObj[0].BillCode) {
+          billCode = responseObj[0].BillCode;
+        } else if (responseObj.billCode) {
+          billCode = responseObj.billCode;
+        } else {
+          console.error('Unexpected response format:', responseObj);
+          showErrorPopup('Ralat: Format respon tidak dijangka. Sila cuba lagi.');
+          return false;
+        }
+        
+        console.log('Bill code extracted:', billCode);
+        console.log('Redirect URL:', `https://toyyibpay.com/${billCode}`);
+        
+        if (billCode) {
+          // Show payment redirect modal instead of direct redirect
+          showPaymentRedirectModal(billCode);
+          return true;
+        } else {
+          console.error('Failed to get bill code:', result);
+          showErrorPopup('Ralat: Gagal menjana bil pembayaran. Sila cuba lagi.');
+          return false;
+        }
+      } catch (error) {
+        console.error('Error creating bill:', error);
+        showErrorPopup('Ralat: Berlaku masalah semasa memproses tempahan. Sila cuba lagi.');
+        return false;
+      }
+    }
+    
+    // Function to handle payment completion
+    function handlePaymentCompletion() {
+      // Retrieve order data from sessionStorage
+      const orderData = JSON.parse(sessionStorage.getItem('pendingOrder'));
+      
+      if (orderData) {
+        // Update payment status
+        orderData.paymentStatus = 'Paid';
+        
+        // Send Telegram notification with payment status
+        sendTelegramNotification(orderData).then(success => {
+          if (success) {
+            // Show success modal
+            document.getElementById('successMessage').textContent = 
+              'Pembayaran berjaya! Terima kasih atas tempahan anda. Kami akan memproses pesanan anda segera.';
+            document.getElementById('successModal').classList.remove('hidden');
+          } else {
+            showErrorPopup('Pembayaran berjaya tetapi gagal menghantar notifikasi. Kami akan menghubungi anda tidak lama lagi.');
+          }
+        });
+        
+        // Clear sessionStorage
+        sessionStorage.removeItem('pendingOrder');
+      }
+    }
+    
+    // Update order summary
+    function updateOrderSummary() {
+      const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
+      const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
+      const paymentMethod = document.getElementById('payment').value;
+      
+      const orderSummaryContent = document.getElementById('orderSummaryContent');
+      const totalAmountEl = document.getElementById('totalAmount');
+      
+      // Clear previous content
+      orderSummaryContent.innerHTML = '';
+      
+      let total = 0;
+      let hasItems = false;
+      
+      // Add GA-110 Hitam if quantity > 0
+      if (ga110Qty > 0) {
+        const itemPrice = 69.90;
+        const itemTotal = ga110Qty * itemPrice;
+        total += itemTotal;
+        hasItems = true;
+        
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'order-summary-item';
+        itemDiv.innerHTML = `
+          <span>G-SHOCK GA-110 Hitam (x${ga110Qty})</span>
+          <span>RM${itemTotal.toFixed(2)}</span>
+        `;
+        orderSummaryContent.appendChild(itemDiv);
+      }
+      
+      // Add GA-100 Merah if quantity > 0
+      if (ga100Qty > 0) {
+        const itemPrice = 69.90;
+        const itemTotal = ga100Qty * itemPrice;
+        total += itemTotal;
+        hasItems = true;
+        
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'order-summary-item';
+        itemDiv.innerHTML = `
+          <span>G-SHOCK GA-100 Merah (x${ga100Qty})</span>
+          <span>RM${itemTotal.toFixed(2)}</span>
+        `;
+        orderSummaryContent.appendChild(itemDiv);
+      }
+      
+      // Add COD fee if applicable
+      if (paymentMethod === 'COD' && hasItems) {
+        total += 5;
+        
+        const feeDiv = document.createElement('div');
+        feeDiv.className = 'order-summary-item';
+        feeDiv.innerHTML = `
+          <span>Bayaran COD</span>
+          <span>RM5.00</span>
+        `;
+        orderSummaryContent.appendChild(feeDiv);
+      }
+      
+      // Update total
+      totalAmountEl.textContent = `RM${total.toFixed(2)}`;
+      
+      // Show message if no items selected
+      if (!hasItems) {
+        const noItemsDiv = document.createElement('div');
+        noItemsDiv.className = 'order-summary-item';
+        noItemsDiv.innerHTML = `
+          <span>Tiada produk dipilih</span>
+          <span>RM0.00</span>
+        `;
+        orderSummaryContent.appendChild(noItemsDiv);
+      }
+    }
+    
+    // Handler for main order form (product selection and payment)
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Check if payment method is selected
+      const paymentMethod = document.getElementById('payment').value;
+      if (!paymentMethod) {
+        showErrorPopup('Sila pilih kaedah pembayaran');
+        return;
+      }
+      
+      // Check if at least one product is selected
+      const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
+      const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
+      
+      if (ga110Qty === 0 && ga100Qty === 0) {
+        showErrorPopup('Sila pilih sekurang-kurangnya satu produk');
+        return;
+      }
+      
+      // Show customer info modal
+      document.getElementById('customerInfoModal').classList.add('active');
+    });
+    
+    // Handler for customer info form
+    document.getElementById('confirmCustomerInfo').addEventListener('click', async function(e) {
+      e.preventDefault();
+      
+      // Hide any existing errors
+      hideErrorPopup();
+      
+      // Validate form
+      const validationError = validateForm();
+      if (validationError) {
+        showErrorPopup(validationError.message);
+        scrollToAndHighlight(validationError.element);
+        return;
+      }
+      
+      // Get form values
+      const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
+      const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
+      const customerName = document.getElementById('modalCustomerName').value;
+      const customerPhone = document.getElementById('modalCustomerPhone').value;
+      const customerAddress = document.getElementById('modalCustomerAddress').value;
+      const poskod = document.getElementById('modalPoskod').value.trim();
+      const customerState = document.getElementById('modalCustomerState').value;
+      const paymentMethod = document.getElementById('payment').value;
+      
+      // Determine product and quantity
+      let product, quantity;
+      if (ga110Qty > 0 && ga100Qty > 0) {
+        product = "GA-110 Hitam & GA-100 Merah";
+        quantity = `${ga110Qty} & ${ga100Qty}`;
+      } else if (ga110Qty > 0) {
+        product = "GA-110 Hitam";
+        quantity = ga110Qty;
+      } else {
+        product = "GA-100 Merah";
+        quantity = ga100Qty;
+      }
+      
+      // Calculate total
+      let total = (ga110Qty + ga100Qty) * 69.90;
+      if (paymentMethod === 'COD') {
+        total += 5;
+      }
+      
+      // Prepare order data
+      const orderData = {
+        product,
+        quantity,
+        customerName,
+        customerPhone,
+        customerAddress,
+        poskod,
+        customerState,
+        paymentMethod,
+        total: total.toFixed(2),
+        orderDate: new Date().toISOString(),
+        paymentStatus: paymentMethod === 'COD' ? 'Pending' : 'Pending Payment'
+      };
+      
+      // Show loading overlay
+      document.getElementById('loadingOverlay').classList.remove('hidden');
+      
+      try {
+        if (paymentMethod === 'COD') {
+          // For COD: Send Telegram notification immediately
+          const telegramSuccess = await sendTelegramNotification(orderData);
+          
+          // Hide loading overlay
+          document.getElementById('loadingOverlay').classList.add('hidden');
+          
+          if (telegramSuccess) {
+            // Show success modal for COD
+            document.getElementById('successMessage').textContent = 
+              'Terima kasih atas tempahan anda. Kami akan menghubungi anda untuk pengesahan penghantaran.';
+            document.getElementById('successModal').classList.remove('hidden');
+            
+            // Close customer info modal
+            document.getElementById('customerInfoModal').classList.remove('active');
+            
+            // Show COD notification
+            showCodNotification();
+          } else {
+            showErrorPopup('Ralat: Gagal menghantar notifikasi. Sila cuba lagi.');
+          }
+        } else if (paymentMethod === 'Online') {
+          // For Online Payment: Store order data and redirect to ToyyibPay
+          sessionStorage.setItem('pendingOrder', JSON.stringify(orderData));
+          
+          // Close customer info modal
+          document.getElementById('customerInfoModal').classList.remove('active');
+          
+          // Redirect to ToyyibPay
+          const redirectSuccess = await redirectToToyyibPay(orderData);
+          
+          // Hide loading overlay if redirection failed
+          if (!redirectSuccess) {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+          }
+        }
+      } catch (error) {
+        console.error('Error processing payment:', error);
+        document.getElementById('loadingOverlay').classList.add('hidden');
+        showErrorPopup('Ralat: Berlaku masalah semasa memproses pembayaran. Sila cuba lagi.');
+      }
+    });
+    
+    // Close customer info modal
+    document.getElementById('closeCustomerModal').addEventListener('click', function() {
+      document.getElementById('customerInfoModal').classList.remove('active');
+    });
+    
+    document.getElementById('cancelCustomerInfo').addEventListener('click', function() {
+      document.getElementById('customerInfoModal').classList.remove('active');
+    });
+    
+    // Close success modal
+    document.getElementById('closeModal').addEventListener('click', function() {
+      document.getElementById('successModal').classList.add('hidden');
+    });
+    
+    // Close error popup
+    document.getElementById('closeErrorPopup').addEventListener('click', function() {
+      hideErrorPopup();
+    });
+    
+    // Quantity selector functionality
+    document.querySelectorAll('.quantity-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const productCard = this.closest('.product-card');
+        const productName = productCard.dataset.product;
+        const quantity = parseInt(this.dataset.quantity);
+        
+        // Update active state
+        productCard.querySelectorAll('.quantity-btn').forEach(b => {
+          b.classList.remove('active');
+        });
+        this.classList.add('active');
+        
+        // Update hidden input
+        if (productName === 'GA-110 Hitam') {
+          document.getElementById('ga110Quantity').value = quantity;
+        } else if (productName === 'GA-100 Merah') {
+          document.getElementById('ga100Quantity').value = quantity;
+        }
+        
+        // Update order summary
+        updateOrderSummary();
+      });
+    });
+    
+    // Payment method change
+    document.getElementById('payment').addEventListener('change', function() {
+      updateOrderSummary();
+    });
+    
+    // Initialize order summary
+    updateOrderSummary();
+    
+    // Video sound toggle
+    document.getElementById('soundButton').addEventListener('click', function() {
+      const video = document.getElementById('productVideo');
+      const soundIcon = this.querySelector('i');
+      const soundIndicator = document.getElementById('soundIndicator');
+      
+      if (video.muted) {
+        video.muted = false;
+        soundIcon.classList.remove('fa-volume-mute');
+        soundIcon.classList.add('fa-volume-up');
+        soundIndicator.classList.add('show');
+        
+        // Hide indicator after 2 seconds
+        setTimeout(() => {
+          soundIndicator.classList.remove('show');
+        }, 2000);
+      } else {
+        video.muted = true;
+        soundIcon.classList.remove('fa-volume-up');
+        soundIcon.classList.add('fa-volume-mute');
+      }
+    });
+    
+    // Image zoom functionality
+    document.querySelectorAll('.product-image').forEach(img => {
+      img.addEventListener('click', function() {
+        const modal = document.getElementById('imageZoomModal');
+        const zoomedImage = document.getElementById('zoomedImage');
+        
+        zoomedImage.src = this.src;
+        modal.classList.add('active');
+      });
+    });
+    
+    // Close image zoom modal
+    document.querySelector('.image-zoom-close').addEventListener('click', function() {
+      document.getElementById('imageZoomModal').classList.remove('active');
+    });
+    
+    // Close image zoom modal when clicking outside the image
+    document.getElementById('imageZoomModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('active');
+      }
+    });
+    
+    // Initialize review carousel
+    function initializeReviewCarousel() {
+      const reviewCarousel = document.getElementById('reviewCarousel');
+      
+      // Sample review data
+      const reviews = [
+        {
+          name: "Ahmad",
+          rating: 5,
+          comment: "Kualiti jam sangat bagus! Harga berpatutan dan penghantaran pantas.",
+          date: "2 hari lepas"
+        },
+        {
+          name: "Siti",
+          rating: 5,
+          comment: "Jam tahan lasak seperti yang dijanjikan. Sangat berpuas hati!",
+          date: "5 hari lepas"
+        },
+        {
+          name: "Rizal",
+          rating: 4,
+          comment: "Rekaan moden dan kemas. Cuma packaging boleh dipertingkatkan.",
+          date: "1 minggu lepas"
+        },
+        {
+          name: "Farah",
+          rating: 5,
+          comment: "Hadiah sempurna untuk suami! Beli lagi untuk koleksi lain.",
+          date: "3 hari lepas"
+        },
+        {
+          name: "Hakim",
+          rating: 5,
+          comment: "Sudah 3 bulan guna, masih berfungsi dengan baik. Recommened!",
+          date: "2 minggu lepas"
+        },
+        {
+          name: "Lina",
+          rating: 4,
+          comment: "Pembelian yang berbaloi. Jam nampak mewah dan tahan lama.",
+          date: "4 hari lepas"
+        }
+      ];
+      
+      // Clear existing content
+      reviewCarousel.innerHTML = '';
+      
+      // Create review slides
+      for (let i = 0; i < reviews.length; i += 2) {
+        const slide = document.createElement('div');
+        slide.className = 'review-slide';
+        
+        // Add review cards
+        for (let j = 0; j < 2 && i + j < reviews.length; j++) {
+          const review = reviews[i + j];
+          const card = document.createElement('div');
+          card.className = 'review-card';
+          
+          // Create star rating HTML
+          let starsHTML = '';
+          for (let k = 1; k <= 5; k++) {
+            if (k <= review.rating) {
+              starsHTML += '<i class="fas fa-star"></i>';
+            } else {
+              starsHTML += '<i class="far fa-star"></i>';
+            }
+          }
+          
+          card.innerHTML = `
+            <div class="flex items-center mb-3">
+              <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center mr-3">
+                <span class="font-bold">${review.name.charAt(0)}</span>
+              </div>
+              <div>
+                <h4 class="font-bold">${review.name}</h4>
+                <div class="star-rating text-sm">${starsHTML}</div>
+              </div>
+            </div>
+            <p class="text-gray-700 mb-2">${review.comment}</p>
+            <p class="text-gray-500 text-sm">${review.date}</p>
+          `;
+          
+          slide.appendChild(card);
+        }
+        
+        reviewCarousel.appendChild(slide);
+      }
+      
+      // Set up navigation buttons
+      document.getElementById('prevReview').addEventListener('click', function() {
+        reviewCarousel.scrollBy({
+          left: -reviewCarousel.offsetWidth,
+          behavior: 'smooth'
+        });
+      });
+      
+      document.getElementById('nextReview').addEventListener('click', function() {
+        reviewCarousel.scrollBy({
+          left: reviewCarousel.offsetWidth,
+          behavior: 'smooth'
+        });
+      });
+    }
+    
+    // Initialize review carousel when page loads
+    initializeReviewCarousel();
+    
+    // Fake order notifications
+    function showFakeOrderNotification() {
+      const names = ['Ahmad', 'Siti', 'Rizal', 'Farah', 'Hakim', 'Lina'];
+      const locations = ['Kuala Lumpur', 'Selangor', 'Johor', 'Penang', 'Perak', 'Kedah'];
+      const products = ['G-SHOCK GA-110 Hitam', 'G-SHOCK GA-100 Merah'];
+      
+      const randomName = names[Math.floor(Math.random() * names.length)];
+      const randomLocation = locations[Math.floor(Math.random() * locations.length)];
+      const randomProduct = products[Math.floor(Math.random() * products.length)];
+      
+      document.getElementById('fakeCustomerName').textContent = randomName;
+      document.getElementById('fakeCustomerLocation').textContent = randomLocation;
+      document.getElementById('fakeProductName').textContent = randomProduct;
+      
+      const notification = document.getElementById('fakeOrderNotification');
+      notification.classList.remove('hidden');
+      
+      setTimeout(() => {
+        notification.classList.remove('translate-x-full', 'scale-95');
+        notification.classList.add('translate-x-0', 'scale-100');
+        notification.style.opacity = '1';
+      }, 100);
+      
+      // Hide after 5 seconds
+      setTimeout(() => {
+        hideFakeOrderNotification();
+      }, 5000);
+    }
+    
+    function hideFakeOrderNotification() {
+      const notification = document.getElementById('fakeOrderNotification');
+      notification.classList.add('translate-x-full', 'scale-95');
+      notification.classList.remove('translate-x-0', 'scale-100');
+      notification.style.opacity = '0';
+      
+      setTimeout(() => {
+        notification.classList.add('hidden');
+      }, 300);
+    }
+    
+    // COD notification
+    function showCodNotification() {
+      const notification = document.getElementById('codNotification');
+      notification.classList.remove('hidden');
+      
+      setTimeout(() => {
+        notification.classList.remove('translate-x-full', 'scale-95');
+        notification.classList.add('translate-x-0', 'scale-100');
+        notification.style.opacity = '1';
+      }, 100);
+      
+      // Hide after 5 seconds
+      setTimeout(() => {
+        hideCodNotification();
+      }, 5000);
+    }
+    
+    function hideCodNotification() {
+      const notification = document.getElementById('codNotification');
+      notification.classList.add('translate-x-full', 'scale-95');
+      notification.classList.remove('translate-x-0', 'scale-100');
+      notification.style.opacity = '0';
+      
+      setTimeout(() => {
+        notification.classList.add('hidden');
+      }, 300);
+    }
+    
+    // Show fake order notifications periodically
+    setInterval(showFakeOrderNotification, 15000);
+    
+    // Show first fake order notification after 5 seconds
+    setTimeout(showFakeOrderNotification, 5000);
+    
+    // Check if there's a pending order in sessionStorage (for payment completion)
+    window.addEventListener('load', function() {
+      // Check if we're returning from payment
+      const urlParams = new URLSearchParams(window.location.search);
+      const paymentStatus = urlParams.get('status');
+      
+      if (paymentStatus === 'success') {
+        handlePaymentCompletion();
+      }
+    });
+  </script>
+</body>
+</html>
