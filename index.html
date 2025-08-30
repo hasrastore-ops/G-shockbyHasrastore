@@ -315,6 +315,15 @@
       position: relative;
     }
     
+    /* Slider indicators */
+    #reviewIndicators button {
+      transition: all 0.3s ease;
+    }
+
+    #reviewIndicators button:hover {
+      transform: scale(1.2);
+    }
+    
     /* Responsive review styles */
     @media (min-width: 768px) {
       .review-slide {
@@ -341,6 +350,10 @@
       
       .review-card {
         min-height: 280px; /* Taller cards for mobile */
+      }
+      
+      #reviewIndicators {
+        margin-top: 1rem;
       }
     }
     
@@ -787,6 +800,11 @@
           <button id="nextReview" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-md z-10 hidden md:block">
             <i class="fas fa-chevron-right text-red-600"></i>
           </button>
+          
+          <!-- Slider Indicators -->
+          <div class="flex justify-center mt-6 space-x-2" id="reviewIndicators">
+            <!-- Indicators will be dynamically added here -->
+          </div>
         </div>
       </div>
     </section>
@@ -1044,9 +1062,9 @@
     const TOYYIBPAY_CONFIG = {
       userSecretKey: 'b2kcp05o-b5m0-q000-55i7-w3j57riufv7h', // Provided secret key
       categoryCode: 'ltigdivv', // Provided category code
-      callbackUrl: 'https://https://g-shockbyhasrastore.vercel.app//payment-callback.html', // Replace with your callback URL
-      returnUrl: 'https://https://g-shockbyhasrastore.vercel.app//payment-success.html',    // Replace with your return URL
-      failedUrl: 'https://https://g-shockbyhasrastore.vercel.app//payment-failed.html'      // Replace with your failed URL
+      callbackUrl: 'https://g-shockbyhasrastore.vercel.app/payment-callback.html', // Updated with your domain
+      returnUrl: 'https://g-shockbyhasrastore.vercel.app/payment-success.html',    // Updated with your domain
+      failedUrl: 'https://g-shockbyhasrastore.vercel.app/payment-failed.html'      // Updated with your domain
     };
     
     // Meta Pixel Event Tracking
@@ -1627,16 +1645,20 @@ ${paymentStatusText}
       // Determine product and quantity
       let product = '';
       let quantity = 0;
+      let contentIds = [];
       
       if (ga110Qty > 0 && ga100Qty > 0) {
         product = 'GA-110 Hitam & GA-100 Merah';
         quantity = ga110Qty + ga100Qty;
+        contentIds = ['GA110', 'GA100'];
       } else if (ga110Qty > 0) {
         product = 'GA-110 Hitam';
         quantity = ga110Qty;
+        contentIds = ['GA110'];
       } else if (ga100Qty > 0) {
         product = 'GA-100 Merah';
         quantity = ga100Qty;
+        contentIds = ['GA100'];
       }
       
       // Calculate total
@@ -1656,7 +1678,8 @@ ${paymentStatusText}
         poskod,
         customerState,
         paymentMethod,
-        paymentStatus: paymentMethod === 'COD' ? 'Pending' : 'Pending'
+        paymentStatus: paymentMethod === 'COD' ? 'Pending' : 'Pending',
+        orderId: paymentMethod === 'COD' ? 'COD_' + Date.now() : 'ONLINE_' + Date.now()
       };
       
       // Show loading overlay
@@ -1667,6 +1690,17 @@ ${paymentStatusText}
       
       // Handle different payment methods
       if (paymentMethod === 'COD') {
+        // Track COD purchase as conversion in Meta Ads
+        fbq('track', 'Purchase', {
+          content_name: product,
+          content_category: 'Watches',
+          content_ids: contentIds,
+          content_type: 'product',
+          value: total,
+          currency: 'MYR',
+          order_id: orderData.orderId
+        });
+        
         // Send Telegram notification
         const success = await sendTelegramNotification(orderData);
         
@@ -1696,6 +1730,8 @@ ${paymentStatusText}
         // Store order data in sessionStorage for payment pages
         sessionStorage.setItem('pendingOrder', JSON.stringify(orderData));
         
+        // DO NOT track purchase here - will be tracked in payment-success.html
+        
         // Redirect to ToyyibPay
         const success = await redirectToToyyibPay(orderData);
         
@@ -1713,97 +1749,175 @@ ${paymentStatusText}
       document.getElementById('successModal').classList.add('hidden');
     });
     
-    // Initialize review carousel
-    const reviews = [
-      {
-        name: 'Ahmad Faisal',
-        rating: 5,
-        comment: 'Sangat berpuas hati dengan kualiti jam ini. Tahan lasak dan nampak premium.',
-        date: '15/05/2023'
-      },
-      {
-        name: 'Siti Aminah',
-        rating: 5,
-        comment: 'Harga berpatutan untuk jam yang berkualiti tinggi. Penghantaran cepat!',
-        date: '20/05/2023'
-      },
-      {
-        name: 'Mohd Razif',
-        rating: 4,
-        comment: 'Jam yang bagus, cuma packaging boleh lagi baik. Overall puas hati.',
-        date: '25/05/2023'
-      },
-      {
-        name: 'Nurul Huda',
-        rating: 5,
-        comment: 'Saya beli untuk hadiah suami. Dia suka sangat! Recomended.',
-        date: '30/05/2023'
-      },
-      {
-        name: 'Farhan Hakim',
-        rating: 5,
-        comment: 'Kualiti superb, harga mampu milik. Will buy again!',
-        date: '05/06/2023'
-      },
-      {
-        name: 'Linda Salleh',
-        rating: 4,
-        comment: 'Jam cantik dan berat, nampak mahal. Service seller pun baik.',
-        date: '10/06/2023'
-      }
-    ];
-    
-    const reviewCarousel = document.getElementById('reviewCarousel');
-    
-    // Create review slides
-    for (let i = 0; i < reviews.length; i += 2) {
-      const slide = document.createElement('div');
-      slide.className = 'review-slide';
-      
-      // Create review cards
-      for (let j = i; j < i + 2 && j < reviews.length; j++) {
-        const review = reviews[j];
-        const card = document.createElement('div');
-        card.className = 'review-card';
+    // Initialize review carousel with auto-slide and indicators
+    function initializeReviewCarousel() {
+      // Generate 10 reviews with variable dates (within last 5 days)
+      const reviewData = [
+        { name: 'Nurul Huda', rating: 5, comment: 'Order hari Isnin, Rabu dah sampai. Tak sangka secepat ni. Seller responsif, reply semua soalan dengan sabar. Barang sampai dalam keadaan elok, jam pun cantik sangat' },
+        { name: 'Mohd Safwan', rating: 5, comment: 'Tak sangka boleh dapat jam G-Shock harga bawah RM100 tapi kualiti macam original kedai. Berat dia ngam, design sporty, strap selesa. Warna merah ni memang rare, ramai tegur lawa. First time beli jam murah rasa puas hati macam beli mahal!' },
+        { name: 'Farhan Rizqi', rating: 4, comment: 'Saya ambil COD sebab first time beli dengan seller ni. Ada caj sikit je untuk cash, tapi rasa berbaloi sebab barang sampai depan rumah baru bayar. Senang hati, tak risau scam. Jam pun lawa dan selesa dipakai.' },
+        { name: 'Nurul Huda', rating: 5, comment: 'Fungsi auto-light dia best. GA-100 merah ni standout, sesuai untuk gym, motor & jalan-jalan. Kawan-kawan pun tegur lawa. Harga mampu milik, rasa premium!' },
+        { name: 'Farhan Hakim', rating: 5, comment: 'Dulu memang struggle nak cari jam untuk kerja site. Asyik beli jam murah, 2-3 bulan je dah rosak sebab terhentak, kena air hujan. Member recommend GA-100 merah ni, terus cuba. Memang puas hati! Ringan tapi rugged, display clear, water resistant pulak tu. Warna merah garang habis, ramai tegur lawa. Sekarang kerja lasak pun hati tenang!' },
+        { name: 'Muhammad Danish', rating: 4, comment: 'Kerja site pun tak risau dah, jam ni tahan hentakan & air. Merah dia striking gila!' },
+        { name: 'Zulkifli Ali', rating: 5, comment: 'Cari jam untuk hiking & outdoor activities, akhirnya jumpa jam ni. Air terjun pun tak risau! Sangat sesuai untuk orang adventure macam saya' },
+        { name: 'Rohana Ibrahim', rating: 5, comment: 'Beli jam ni untuk hadiah birthday kawan. Seller bungkus kemas siap kotak tin, memang nampak premium walaupun harga bawah RM100. Kawan saya pun terkejut jam ni rugged, lawa, dan berkualiti. Memang berbaloi beli untuk gift!' },
+        { name: 'Kamaluddin Hassan', rating: 4, comment: 'Jam yang hebat untuk harga yang berpatutan. Sangat tahan lasak.' },
+        { name: 'Fatimah Yusof', rating: 5, comment: 'Penghantaran super cepat! Jam cantik dan sesuai dengan gambar.' }
+      ];
+
+      // Generate random dates within the last 5 days
+      const reviews = reviewData.map(review => {
+        const daysAgo = Math.floor(Math.random() * 5); // 0-4 days ago
+        const date = new Date();
+        date.setDate(date.getDate() - daysAgo);
         
-        // Create star rating
-        let stars = '';
-        for (let k = 0; k < 5; k++) {
-          if (k < review.rating) {
-            stars += '<i class="fas fa-star"></i>';
-          } else {
-            stars += '<i class="far fa-star"></i>';
+        return {
+          ...review,
+          date: date.toLocaleDateString('ms-MY', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          })
+        };
+      });
+
+      const reviewCarousel = document.getElementById('reviewCarousel');
+      const indicatorsContainer = document.getElementById('reviewIndicators');
+      
+      // Clear existing content
+      reviewCarousel.innerHTML = '';
+      indicatorsContainer.innerHTML = '';
+      
+      // Create slides (2 reviews per slide on desktop, 1 on mobile)
+      const slides = [];
+      for (let i = 0; i < reviews.length; i += 2) {
+        const slideReviews = reviews.slice(i, i + 2);
+        slides.push(slideReviews);
+      }
+      
+      // Create slide elements
+      slides.forEach((slideReviews, slideIndex) => {
+        const slide = document.createElement('div');
+        slide.className = 'review-slide';
+        slide.dataset.slideIndex = slideIndex;
+        
+        // Create review cards
+        slideReviews.forEach(review => {
+          const card = document.createElement('div');
+          card.className = 'review-card';
+          
+          // Create star rating
+          let stars = '';
+          for (let k = 0; k < 5; k++) {
+            if (k < review.rating) {
+              stars += '<i class="fas fa-star"></i>';
+            } else {
+              stars += '<i class="far fa-star"></i>';
+            }
           }
-        }
-        
-        card.innerHTML = `
-          <div class="flex items-center mb-3">
-            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-3">
-              <span class="text-red-600 font-bold">${review.name.charAt(0)}</span>
+          
+          card.innerHTML = `
+            <div class="flex items-center mb-3">
+              <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-3">
+                <span class="text-red-600 font-bold">${review.name.charAt(0)}</span>
+              </div>
+              <div>
+                <h4 class="font-bold">${review.name}</h4>
+                <div class="star-rating text-sm">${stars}</div>
+              </div>
             </div>
-            <div>
-              <h4 class="font-bold">${review.name}</h4>
-              <div class="star-rating text-sm">${stars}</div>
-            </div>
-          </div>
-          <p class="text-gray-700 mb-2">${review.comment}</p>
-          <p class="text-gray-500 text-sm">${review.date}</p>
-        `;
+            <p class="text-gray-700 mb-2">${review.comment}</p>
+            <p class="text-gray-500 text-sm">${review.date}</p>
+          `;
+          
+          slide.appendChild(card);
+        });
         
-        slide.appendChild(card);
+        reviewCarousel.appendChild(slide);
+        
+        // Create indicator dot
+        const indicator = document.createElement('button');
+        indicator.className = `w-3 h-3 rounded-full transition-colors duration-300 ${
+          slideIndex === 0 ? 'bg-red-600' : 'bg-gray-300'
+        }`;
+        indicator.dataset.slideIndex = slideIndex;
+        indicator.addEventListener('click', () => goToSlide(slideIndex));
+        indicatorsContainer.appendChild(indicator);
+      });
+      
+      // Auto-slide functionality
+      let currentSlide = 0;
+      let autoSlideInterval;
+      
+      function goToSlide(slideIndex) {
+        // Update current slide
+        currentSlide = slideIndex;
+        
+        // Scroll to slide
+        const slideWidth = reviewCarousel.querySelector('.review-slide').offsetWidth;
+        reviewCarousel.scrollTo({
+          left: slideIndex * slideWidth,
+          behavior: 'smooth'
+        });
+        
+        // Update indicators
+        indicatorsContainer.querySelectorAll('button').forEach((indicator, index) => {
+          if (index === slideIndex) {
+            indicator.classList.remove('bg-gray-300');
+            indicator.classList.add('bg-red-600');
+          } else {
+            indicator.classList.remove('bg-red-600');
+            indicator.classList.add('bg-gray-300');
+          }
+        });
+        
+        // Reset auto-slide timer
+        resetAutoSlide();
       }
       
-      reviewCarousel.appendChild(slide);
+      function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        goToSlide(currentSlide);
+      }
+      
+      function prevSlide() {
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        goToSlide(currentSlide);
+      }
+      
+      function startAutoSlide() {
+        autoSlideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+      }
+      
+      function resetAutoSlide() {
+        clearInterval(autoSlideInterval);
+        startAutoSlide();
+      }
+      
+      // Navigation buttons
+      document.getElementById('prevReview').addEventListener('click', prevSlide);
+      document.getElementById('nextReview').addEventListener('click', nextSlide);
+      
+      // Pause auto-slide on hover
+      reviewCarousel.addEventListener('mouseenter', () => {
+        clearInterval(autoSlideInterval);
+      });
+      
+      reviewCarousel.addEventListener('mouseleave', () => {
+        startAutoSlide();
+      });
+      
+      // Start auto-slide
+      startAutoSlide();
+      
+      // Handle window resize
+      window.addEventListener('resize', () => {
+        goToSlide(currentSlide);
+      });
     }
-    
-    // Review carousel navigation
-    document.getElementById('prevReview').addEventListener('click', function() {
-      reviewCarousel.scrollBy({ left: -700, behavior: 'smooth' });
-    });
-    
-    document.getElementById('nextReview').addEventListener('click', function() {
-      reviewCarousel.scrollBy({ left: 700, behavior: 'smooth' });
-    });
+
+    // Initialize the review carousel when the page loads
+    document.addEventListener('DOMContentLoaded', initializeReviewCarousel);
     
     // Video controls
     const video = document.getElementById('productVideo');

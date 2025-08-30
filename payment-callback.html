@@ -90,16 +90,7 @@
         const orderData = JSON.parse(sessionStorage.getItem('pendingOrder'));
         
         if (orderData) {
-          // Track purchase event
-          fbq('track', 'Purchase', {
-            content_name: orderData.product,
-            content_category: 'Watches',
-            content_ids: [orderData.product === 'GA-110 Hitam' ? 'GA110' : 'GA100'],
-            content_type: 'product',
-            value: orderData.total,
-            currency: 'MYR',
-            order_id: orderid || ('ORDER_' + Date.now())
-          });
+          // DO NOT track purchase here - will be tracked in payment-success.html
           
           // Update payment status
           orderData.paymentStatus = 'Paid';

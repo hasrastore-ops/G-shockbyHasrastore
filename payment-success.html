@@ -73,16 +73,18 @@
       const orderData = JSON.parse(sessionStorage.getItem('pendingOrder'));
       
       if (orderData) {
-        // Track purchase event
-        fbq('track', 'Purchase', {
-          content_name: orderData.product,
-          content_category: 'Watches',
-          content_ids: [orderData.product === 'GA-110 Hitam' ? 'GA110' : 'GA100'],
-          content_type: 'product',
-          value: orderData.total,
-          currency: 'MYR',
-          order_id: orderData.orderId || ('ORDER_' + Date.now())
-        });
+        // Track purchase event ONLY for online payments
+        if (orderData.paymentMethod === 'Online') {
+          fbq('track', 'Purchase', {
+            content_name: orderData.product,
+            content_category: 'Watches',
+            content_ids: [orderData.product === 'GA-110 Hitam' ? 'GA110' : 'GA100'],
+            content_type: 'product',
+            value: orderData.total,
+            currency: 'MYR',
+            order_id: orderData.orderId
+          });
+        }
         
         // Display order details to the customer
         const orderDetailsElement = document.getElementById('orderDetails');
