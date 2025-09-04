@@ -341,7 +341,6 @@
     #reviewIndicators button {
       transition: all 0.3s ease;
     }
-
     #reviewIndicators button:hover {
       transform: scale(1.2);
     }
@@ -726,6 +725,64 @@
       margin-top: 0.5rem;
       box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
     }
+    
+    /* WhatsApp Review Section Styles - Updated for 9:16 ratio */
+    .whatsapp-review-section {
+      position: relative;
+      height: auto; /* Changed from fixed height */
+      padding-bottom: 60px; /* Space for indicators */
+    }
+    
+    .whatsapp-review-slide {
+      scroll-snap-align: start;
+      flex: 0 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 600px; /* Increased height to fit full image */
+    }
+    
+    .whatsapp-review-image {
+      position: relative;
+      width: 337.5px; /* 9:16 ratio width (600 * 9/16) */
+      height: 600px; /* 9:16 ratio height */
+      border-radius: 0; /* Removed rounded edges */
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .whatsapp-review-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Changed from cover to contain to show full image */
+    }
+    
+    /* WhatsApp Review Section Responsive */
+    @media (min-width: 768px) {
+      .whatsapp-review-slide {
+        width: 80%;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .whatsapp-review-section {
+        height: auto;
+      }
+      
+      .whatsapp-review-slide {
+        height: 500px; /* Adjusted for mobile */
+      }
+      
+      .whatsapp-review-image {
+        width: 281.25px; /* 9:16 ratio for mobile (500 * 9/16) */
+        height: 500px; /* 9:16 ratio for mobile */
+      }
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
@@ -857,7 +914,35 @@
       </div>
     </section>
     
-    <!-- Review Section -->
+    <!-- WhatsApp Review Section - Now positioned first -->
+    <section class="py-12 px-6 bg-gray-100">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-8">
+          <h2 class="text-2xl font-bold mb-2">📱 Review di WhatsApp</h2>
+                 </div>
+        
+        <div class="relative whatsapp-review-section">
+          <div id="whatsappReviewCarousel" class="review-carousel">
+            <!-- WhatsApp review slides will be dynamically added here -->
+          </div>
+          
+          <!-- Carousel Navigation -->
+          <button id="prevWhatsappReview" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-md z-10 hidden md:block">
+            <i class="fas fa-chevron-left text-red-600"></i>
+          </button>
+          <button id="nextWhatsappReview" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-md z-10 hidden md:block">
+            <i class="fas fa-chevron-right text-red-600"></i>
+          </button>
+          
+          <!-- Slider Indicators -->
+          <div class="flex justify-center mt-6 space-x-2" id="whatsappReviewIndicators">
+            <!-- Indicators will be dynamically added here -->
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Review Section - Now positioned second -->
     <section class="py-12 px-6 bg-gray-100">
       <div class="max-w-6xl mx-auto">
         <div class="text-center mb-8">
@@ -1327,52 +1412,51 @@
     }
     
     // Function to validate form and return the first invalid field
-    // Replace your existing validateForm function with this corrected version
-function validateForm() {
-  const requiredFields = [
-    { id: 'modalCustomerName', name: 'Nama' },
-    { id: 'modalCustomerPhone', name: 'No Telefon' },
-    { id: 'modalCustomerAddress', name: 'Alamat' },
-    { id: 'modalPoskod', name: 'Poskod' },
-    { id: 'modalCustomerState', name: 'Negeri' }
-  ];
-  
-  // Check if at least one product is selected
-  const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
-  const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
-  
-  if (ga110Qty === 0 && ga100Qty === 0) {
-    return { element: document.querySelector('.product-card'), message: 'Sila pilih sekurang-kurangnya satu produk' };
-  }
-  
-  // Only check confirmation checkbox if modal is visible
-  const customerInfoModal = document.getElementById('customerInfoModal');
-  if (customerInfoModal.classList.contains('active')) {
-    const confirmationCheckbox = document.getElementById('modalConfirmation');
-    if (!confirmationCheckbox.checked) {
-      return { element: confirmationCheckbox, message: 'Sila sahkan semua maklumat adalah betul' };
-    }
-    
-    // Check required fields only when modal is active
-    for (const field of requiredFields) {
-      const element = document.getElementById(field.id);
-      if (!element.value.trim()) {
-        return { element, message: `Sila isi ${field.name}` };
+    function validateForm() {
+      const requiredFields = [
+        { id: 'modalCustomerName', name: 'Nama' },
+        { id: 'modalCustomerPhone', name: 'No Telefon' },
+        { id: 'modalCustomerAddress', name: 'Alamat' },
+        { id: 'modalPoskod', name: 'Poskod' },
+        { id: 'modalCustomerState', name: 'Negeri' }
+      ];
+      
+      // Check if at least one product is selected
+      const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
+      const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
+      
+      if (ga110Qty === 0 && ga100Qty === 0) {
+        return { element: document.querySelector('.product-card'), message: 'Sila pilih sekurang-kurangnya satu produk' };
       }
+      
+      // Only check confirmation checkbox if modal is visible
+      const customerInfoModal = document.getElementById('customerInfoModal');
+      if (customerInfoModal.classList.contains('active')) {
+        const confirmationCheckbox = document.getElementById('modalConfirmation');
+        if (!confirmationCheckbox.checked) {
+          return { element: confirmationCheckbox, message: 'Sila sahkan semua maklumat adalah betul' };
+        }
+        
+        // Check required fields only when modal is active
+        for (const field of requiredFields) {
+          const element = document.getElementById(field.id);
+          if (!element.value.trim()) {
+            return { element, message: `Sila isi ${field.name}` };
+          }
+        }
+        
+        // Validate postcode format
+        const poskodValue = document.getElementById('modalPoskod').value.trim();
+        if (!validatePostcode(poskodValue)) {
+          return { 
+            element: document.getElementById('modalPoskod'), 
+            message: 'Poskod tidak sah! Pastikan format 5 digit angka sahaja.' 
+          };
+        }
+      }
+      
+      return null; // All fields are valid
     }
-    
-    // Validate postcode format
-    const poskodValue = document.getElementById('modalPoskod').value.trim();
-    if (!validatePostcode(poskodValue)) {
-      return { 
-        element: document.getElementById('modalPoskod'), 
-        message: 'Poskod tidak sah! Pastikan format 5 digit angka sahaja.' 
-      };
-    }
-  }
-  
-  return null; // All fields are valid
-}
     
     // Fungsi untuk menghantar notifikasi ke Telegram
     async function sendTelegramNotification(orderData) {
@@ -1392,21 +1476,17 @@ function validateForm() {
       const message = `
 🆕 <b>PESANAN BARU</b> 🆕
 ${paymentStatusText}
-
 📦 <b>PRODUK:</b> ${orderData.product}
 🔢 <b>KUANTITI:</b> ${orderData.quantity}
 💰 <b>JUMLAH:</b> RM${orderData.total}
-
 👤 <b>MAKLUMAT PELANGGAN:</b>
 📝 <b>Nama:</b> ${orderData.customerName}
 📱 <b>No Telefon:</b> ${orderData.customerPhone}
 🏠 <b>Alamat:</b> ${orderData.customerAddress}
 📮 <b>Poskod:</b> ${orderData.poskod}
 🗺️ <b>Negeri:</b> ${orderData.customerState}
-
 💳 <b>JENIS PEMBAYARAN:</b> ${orderData.paymentMethod}
 📅 <b>MASA:</b> ${orderDateTime}
-
 ⚠️ <b>SILA PROSESKAN PESANAN INI SECEPAT MUNGKIN</b>
       `;
       
@@ -1483,7 +1563,6 @@ ${paymentStatusText}
         `${expiryDate.getHours().toString().padStart(2, '0')}:` +
         `${expiryDate.getMinutes().toString().padStart(2, '0')}:` +
         `${expiryDate.getSeconds().toString().padStart(2, '0')}`;
-
       // Prepare data for ToyyibPay API
       const formData = new FormData();
       formData.append('userSecretKey', TOYYIBPAY_CONFIG.userSecretKey);
@@ -1635,48 +1714,51 @@ ${paymentStatusText}
     }
     
     // Initialize product selection
-   document.addEventListener('DOMContentLoaded', function() {
-  // Product selection logic
-  const productCards = document.querySelectorAll('.product-card');
-  
-  productCards.forEach(card => {
-    // Skip sold out product
-    if (card.dataset.product === 'G-SHOCK DW-5600 Biru') {
-      return;
-    }
-    
-    const quantityBtns = card.querySelectorAll('.quantity-btn');
-    const deselectBtn = card.querySelector('.deselect-btn');
-    
-    quantityBtns.forEach(btn => {
-      btn.addEventListener('click', function() {
-        // Remove active class from all buttons in this card
-        quantityBtns.forEach(b => b.classList.remove('active'));
+    document.addEventListener('DOMContentLoaded', function() {
+      // Product selection logic
+      const productCards = document.querySelectorAll('.product-card');
+      
+      productCards.forEach(card => {
+        // Skip sold out product
+        if (card.dataset.product === 'G-SHOCK DW-5600 Biru') {
+          return;
+        }
         
-        // Add active class to clicked button
-        this.classList.add('active');
+        const quantityBtns = card.querySelectorAll('.quantity-btn');
+        const deselectBtn = card.querySelector('.deselect-btn');
         
-        // Mark card as selected
-        card.classList.add('selected');
+        quantityBtns.forEach(btn => {
+          btn.addEventListener('click', function() {
+            // Remove active class from all buttons in this card
+            quantityBtns.forEach(b => b.classList.remove('active'));
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Mark card as selected
+            card.classList.add('selected');
+            
+            // Update order summary
+            updateOrderSummary();
+          });
+        });
         
-        // Update order summary
-        updateOrderSummary();
+        deselectBtn.addEventListener('click', function() {
+          // Remove active class from all buttons
+          quantityBtns.forEach(b => b.classList.remove('active'));
+          
+          // Remove selected class from card
+          card.classList.remove('selected');
+          
+          // Update order summary
+          updateOrderSummary();
+        });
       });
-    });
-    
-    deselectBtn.addEventListener('click', function() {
-      // Remove active class from all buttons
-      quantityBtns.forEach(b => b.classList.remove('active'));
       
-      // Remove selected class from card
-      card.classList.remove('selected');
+      // Initialize WhatsApp review carousel first
+      initializeWhatsappReviewCarousel();
       
-      // Update order summary
-      updateOrderSummary();
-    });
-  });
-      
-      // Initialize review carousel
+      // Initialize review carousel second
       initializeReviewCarousel();
       
       // Initialize image zoom modal
@@ -1691,276 +1773,276 @@ ${paymentStatusText}
     
     // Function to update order summary
     function updateOrderSummary() {
-  const productCards = document.querySelectorAll('.product-card');
-  const orderSummaryContent = document.getElementById('orderSummaryContent');
-  const totalAmountEl = document.getElementById('totalAmount');
-  
-  let totalAmount = 0;
-  let totalQuantity = 0;
-  let orderItems = [];
-  
-  productCards.forEach(card => {
-    // Skip sold out product
-    if (card.dataset.product === 'G-SHOCK DW-5600 Biru') {
-      return;
-    }
-    
-    const productName = card.dataset.product;
-    const activeBtn = card.querySelector('.quantity-btn.active');
-    
-    if (activeBtn) {
-      const quantity = parseInt(activeBtn.dataset.quantity);
-      const price = 69.90;
-      const itemTotal = price * quantity;
+      const productCards = document.querySelectorAll('.product-card');
+      const orderSummaryContent = document.getElementById('orderSummaryContent');
+      const totalAmountEl = document.getElementById('totalAmount');
       
-      totalAmount += itemTotal;
-      totalQuantity += quantity;
+      let totalAmount = 0;
+      let totalQuantity = 0;
+      let orderItems = [];
       
-      orderItems.push({
-        name: productName,
-        quantity: quantity,
-        price: price,
-        total: itemTotal
+      productCards.forEach(card => {
+        // Skip sold out product
+        if (card.dataset.product === 'G-SHOCK DW-5600 Biru') {
+          return;
+        }
+        
+        const productName = card.dataset.product;
+        const activeBtn = card.querySelector('.quantity-btn.active');
+        
+        if (activeBtn) {
+          const quantity = parseInt(activeBtn.dataset.quantity);
+          const price = 69.90;
+          const itemTotal = price * quantity;
+          
+          totalAmount += itemTotal;
+          totalQuantity += quantity;
+          
+          orderItems.push({
+            name: productName,
+            quantity: quantity,
+            price: price,
+            total: itemTotal
+          });
+          
+          // Update hidden inputs
+          if (productName === 'GA-110 Hitam') {
+            document.getElementById('ga110Quantity').value = quantity;
+          } else if (productName === 'GA-100 Merah') {
+            document.getElementById('ga100Quantity').value = quantity;
+          }
+        } else {
+          // Reset hidden inputs if not selected
+          if (productName === 'GA-110 Hitam') {
+            document.getElementById('ga110Quantity').value = 0;
+          } else if (productName === 'GA-100 Merah') {
+            document.getElementById('ga100Quantity').value = 0;
+          }
+        }
       });
       
-      // Update hidden inputs
-      if (productName === 'GA-110 Hitam') {
-        document.getElementById('ga110Quantity').value = quantity;
-      } else if (productName === 'GA-100 Merah') {
-        document.getElementById('ga100Quantity').value = quantity;
+      // Update order summary display
+      if (orderItems.length === 0) {
+        orderSummaryContent.innerHTML = `
+          <div class="order-summary-item">
+            <span>Tiada produk dipilih</span>
+            <span>RM0.00</span>
+          </div>
+        `;
+      } else {
+        let summaryHTML = '';
+        orderItems.forEach(item => {
+          summaryHTML += `
+            <div class="order-summary-item">
+              <span>${item.name} x${item.quantity}</span>
+              <span>RM${item.total.toFixed(2)}</span>
+            </div>
+          `;
+        });
+        orderSummaryContent.innerHTML = summaryHTML;
       }
-    } else {
-      // Reset hidden inputs if not selected
-      if (productName === 'GA-110 Hitam') {
-        document.getElementById('ga110Quantity').value = 0;
-      } else if (productName === 'GA-100 Merah') {
-        document.getElementById('ga100Quantity').value = 0;
-      }
-    }
-  });
-  
-  // Update order summary display
-  if (orderItems.length === 0) {
-    orderSummaryContent.innerHTML = `
-      <div class="order-summary-item">
-        <span>Tiada produk dipilih</span>
-        <span>RM0.00</span>
-      </div>
-    `;
-  } else {
-    let summaryHTML = '';
-    orderItems.forEach(item => {
-      summaryHTML += `
-        <div class="order-summary-item">
-          <span>${item.name} x${item.quantity}</span>
-          <span>RM${item.total.toFixed(2)}</span>
-        </div>
-      `;
-    });
-    orderSummaryContent.innerHTML = summaryHTML;
-  }
-  
-  // Add COD fee if applicable
-  const paymentMethod = document.getElementById('payment').value;
-  if (paymentMethod === 'COD' && totalAmount > 0) {
-    // Check if total quantity is 2 or more to apply free COD
-    if (totalQuantity >= 2) {
-      orderSummaryContent.innerHTML += `
-        <div class="order-summary-item">
-          <span>Bayaran COD (Free)</span>
-          <span><s>RM10.00</s></span>
-        </div>
-      `;
-    } else {
-      orderSummaryContent.innerHTML += `
-        <div class="order-summary-item">
-          <span>Bayaran COD</span>
-          <span>RM5.00</span>
-        </div>
-      `;
-      totalAmount += 5;
-    }
-  }
-  
-  // Update total amount
-  totalAmountEl.textContent = `RM${totalAmount.toFixed(2)}`;
-}
-    
-    // Initialize order form
-    function initializeOrderForm() {
-  const orderForm = document.getElementById('orderForm');
-  const paymentSelect = document.getElementById('payment');
-  
-  // Update order summary when payment method changes
-  paymentSelect.addEventListener('change', updateOrderSummary);
-  
-  // Handle form submission
-  orderForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Only validate product selection at this stage
-    const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
-    const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
-    
-    if (ga110Qty === 0 && ga100Qty === 0) {
-      showErrorPopup('Sila pilih sekurang-kurangnya satu produk');
-      return;
-    }
-    
-    // Check payment method
-    if (!paymentSelect.value) {
-      showErrorPopup('Sila pilih kaedah pembayaran');
-      return;
-    }
-    
-    // Show customer info modal
-    document.getElementById('customerInfoModal').classList.add('active');
-  });
-  
-  // Handle customer info modal
-  const customerInfoModal = document.getElementById('customerInfoModal');
-  const closeCustomerModal = document.getElementById('closeCustomerModal');
-  const cancelCustomerInfo = document.getElementById('cancelCustomerInfo');
-  const confirmCustomerInfo = document.getElementById('confirmCustomerInfo');
-  
-  closeCustomerModal.addEventListener('click', function() {
-    customerInfoModal.classList.remove('active');
-  });
-  
-  cancelCustomerInfo.addEventListener('click', function() {
-    customerInfoModal.classList.remove('active');
-  });
-  
-  confirmCustomerInfo.addEventListener('click', async function() {
-    // Validate customer info form
-    const validationError = validateForm();
-    if (validationError) {
-      showErrorPopup(validationError.message);
-      if (validationError.element) {
-        scrollToAndHighlight(validationError.element);
-      }
-      return;
-    }
-    
-    // Get order data
-    const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
-    const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
-    
-    let product = '';
-    let quantity = 0;
-    
-    if (ga110Qty > 0) {
-      product = 'GA-110 Hitam';
-      quantity = ga110Qty;
-    } else if (ga100Qty > 0) {
-      product = 'GA-100 Merah';
-      quantity = ga100Qty;
-    }
-    
-    const price = 69.90;
-    let total = price * quantity;
-    
-    const paymentMethod = document.getElementById('payment').value;
-    // Check if total quantity is 2 or more to apply free COD
-    if (paymentMethod === 'COD' && quantity < 2) {
-      total += 5;
-    }
-    
-    const customerName = document.getElementById('modalCustomerName').value;
-    const customerPhone = document.getElementById('modalCustomerPhone').value;
-    const customerAddress = document.getElementById('modalCustomerAddress').value;
-    const poskod = document.getElementById('modalPoskod').value;
-    const customerState = document.getElementById('modalCustomerState').value;
-    
-    const orderData = {
-      product: product,
-      quantity: quantity,
-      total: total,
-      paymentMethod: paymentMethod,
-      customerName: customerName,
-      customerPhone: customerPhone,
-      customerAddress: customerAddress,
-      poskod: poskod,
-      customerState: customerState,
-      paymentStatus: paymentMethod === 'Online' ? 'Pending' : 'Pending'
-    };
-    
-    // Show loading overlay
-    document.getElementById('loadingOverlay').classList.remove('hidden');
-    
-    try {
-      // Send notification to Telegram
-      await sendTelegramNotification(orderData);
       
-      // If payment method is Online, redirect to ToyyibPay
-      if (paymentMethod === 'Online') {
-        const redirectSuccess = await redirectToToyyibPay(orderData);
-        
-        if (redirectSuccess) {
-          // Hide loading overlay
-          document.getElementById('loadingOverlay').classList.add('hidden');
-          
-          // Keep customer info modal open until redirect
-          return;
+      // Add COD fee if applicable
+      const paymentMethod = document.getElementById('payment').value;
+      if (paymentMethod === 'COD' && totalAmount > 0) {
+        // Check if total quantity is 2 or more to apply free COD
+        if (totalQuantity >= 2) {
+          orderSummaryContent.innerHTML += `
+            <div class="order-summary-item">
+              <span>Bayaran COD (Free)</span>
+              <span><s>RM10.00</s></span>
+            </div>
+          `;
         } else {
-          // Hide loading overlay
-          document.getElementById('loadingOverlay').classList.add('hidden');
-          
-          // Show error
-          showErrorPopup('Ralat semasa memproses pembayaran. Sila cuba lagi.');
-          return;
+          orderSummaryContent.innerHTML += `
+            <div class="order-summary-item">
+              <span>Bayaran COD</span>
+              <span>RM5.00</span>
+            </div>
+          `;
+          totalAmount += 5;
         }
       }
       
-      // If COD, show success and COD notification
-      document.getElementById('loadingOverlay').classList.add('hidden');
-      
-      // Show success modal
-      const successModal = document.getElementById('successModal');
-      successModal.classList.remove('hidden');
-      
-      // Show COD notification
-      showCodNotification(customerName, product);
-      
-      // Reset form
-      orderForm.reset();
-      document.querySelectorAll('.product-card').forEach(card => {
-        card.classList.remove('selected');
-        card.querySelectorAll('.quantity-btn').forEach(btn => {
-          btn.classList.remove('active');
-        });
-      });
-      updateOrderSummary();
-      
-      // Close customer info modal
-      customerInfoModal.classList.remove('active');
-      
-      // Track purchase event for Meta Pixel
-      fbq('track', 'Purchase', {
-        content_name: product,
-        content_category: 'Watches',
-        content_ids: [product === 'GA-110 Hitam' ? 'GA110' : 'GA100'],
-        content_type: 'product',
-        value: total,
-        currency: 'MYR',
-        num_items: quantity
-      });
-      
-    } catch (error) {
-      console.error('Error processing order:', error);
-      document.getElementById('loadingOverlay').classList.add('hidden');
-      showErrorPopup('Ralat semasa memproses tempahan. Sila cuba lagi.');
+      // Update total amount
+      totalAmountEl.textContent = `RM${totalAmount.toFixed(2)}`;
     }
-  });
-  
-  // Close success modal
-  document.getElementById('closeModal').addEventListener('click', function() {
-    document.getElementById('successModal').classList.add('hidden');
-  });
-  
-  // Close error popup
-  document.getElementById('closeErrorPopup').addEventListener('click', hideErrorPopup);
-}
+    
+    // Initialize order form
+    function initializeOrderForm() {
+      const orderForm = document.getElementById('orderForm');
+      const paymentSelect = document.getElementById('payment');
+      
+      // Update order summary when payment method changes
+      paymentSelect.addEventListener('change', updateOrderSummary);
+      
+      // Handle form submission
+      orderForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Only validate product selection at this stage
+        const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
+        const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
+        
+        if (ga110Qty === 0 && ga100Qty === 0) {
+          showErrorPopup('Sila pilih sekurang-kurangnya satu produk');
+          return;
+        }
+        
+        // Check payment method
+        if (!paymentSelect.value) {
+          showErrorPopup('Sila pilih kaedah pembayaran');
+          return;
+        }
+        
+        // Show customer info modal
+        document.getElementById('customerInfoModal').classList.add('active');
+      });
+      
+      // Handle customer info modal
+      const customerInfoModal = document.getElementById('customerInfoModal');
+      const closeCustomerModal = document.getElementById('closeCustomerModal');
+      const cancelCustomerInfo = document.getElementById('cancelCustomerInfo');
+      const confirmCustomerInfo = document.getElementById('confirmCustomerInfo');
+      
+      closeCustomerModal.addEventListener('click', function() {
+        customerInfoModal.classList.remove('active');
+      });
+      
+      cancelCustomerInfo.addEventListener('click', function() {
+        customerInfoModal.classList.remove('active');
+      });
+      
+      confirmCustomerInfo.addEventListener('click', async function() {
+        // Validate customer info form
+        const validationError = validateForm();
+        if (validationError) {
+          showErrorPopup(validationError.message);
+          if (validationError.element) {
+            scrollToAndHighlight(validationError.element);
+          }
+          return;
+        }
+        
+        // Get order data
+        const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
+        const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
+        
+        let product = '';
+        let quantity = 0;
+        
+        if (ga110Qty > 0) {
+          product = 'GA-110 Hitam';
+          quantity = ga110Qty;
+        } else if (ga100Qty > 0) {
+          product = 'GA-100 Merah';
+          quantity = ga100Qty;
+        }
+        
+        const price = 69.90;
+        let total = price * quantity;
+        
+        const paymentMethod = document.getElementById('payment').value;
+        // Check if total quantity is 2 or more to apply free COD
+        if (paymentMethod === 'COD' && quantity < 2) {
+          total += 5;
+        }
+        
+        const customerName = document.getElementById('modalCustomerName').value;
+        const customerPhone = document.getElementById('modalCustomerPhone').value;
+        const customerAddress = document.getElementById('modalCustomerAddress').value;
+        const poskod = document.getElementById('modalPoskod').value;
+        const customerState = document.getElementById('modalCustomerState').value;
+        
+        const orderData = {
+          product: product,
+          quantity: quantity,
+          total: total,
+          paymentMethod: paymentMethod,
+          customerName: customerName,
+          customerPhone: customerPhone,
+          customerAddress: customerAddress,
+          poskod: poskod,
+          customerState: customerState,
+          paymentStatus: paymentMethod === 'Online' ? 'Pending' : 'Pending'
+        };
+        
+        // Show loading overlay
+        document.getElementById('loadingOverlay').classList.remove('hidden');
+        
+        try {
+          // Send notification to Telegram
+          await sendTelegramNotification(orderData);
+          
+          // If payment method is Online, redirect to ToyyibPay
+          if (paymentMethod === 'Online') {
+            const redirectSuccess = await redirectToToyyibPay(orderData);
+            
+            if (redirectSuccess) {
+              // Hide loading overlay
+              document.getElementById('loadingOverlay').classList.add('hidden');
+              
+              // Keep customer info modal open until redirect
+              return;
+            } else {
+              // Hide loading overlay
+              document.getElementById('loadingOverlay').classList.add('hidden');
+              
+              // Show error
+              showErrorPopup('Ralat semasa memproses pembayaran. Sila cuba lagi.');
+              return;
+            }
+          }
+          
+          // If COD, show success and COD notification
+          document.getElementById('loadingOverlay').classList.add('hidden');
+          
+          // Show success modal
+          const successModal = document.getElementById('successModal');
+          successModal.classList.remove('hidden');
+          
+          // Show COD notification
+          showCodNotification(customerName, product);
+          
+          // Reset form
+          orderForm.reset();
+          document.querySelectorAll('.product-card').forEach(card => {
+            card.classList.remove('selected');
+            card.querySelectorAll('.quantity-btn').forEach(btn => {
+              btn.classList.remove('active');
+            });
+          });
+          updateOrderSummary();
+          
+          // Close customer info modal
+          customerInfoModal.classList.remove('active');
+          
+          // Track purchase event for Meta Pixel
+          fbq('track', 'Purchase', {
+            content_name: product,
+            content_category: 'Watches',
+            content_ids: [product === 'GA-110 Hitam' ? 'GA110' : 'GA100'],
+            content_type: 'product',
+            value: total,
+            currency: 'MYR',
+            num_items: quantity
+          });
+          
+        } catch (error) {
+          console.error('Error processing order:', error);
+          document.getElementById('loadingOverlay').classList.add('hidden');
+          showErrorPopup('Ralat semasa memproses tempahan. Sila cuba lagi.');
+        }
+      });
+      
+      // Close success modal
+      document.getElementById('closeModal').addEventListener('click', function() {
+        document.getElementById('successModal').classList.add('hidden');
+      });
+      
+      // Close error popup
+      document.getElementById('closeErrorPopup').addEventListener('click', hideErrorPopup);
+    }
     
     // Initialize video controls
     function initializeVideoControls() {
@@ -2189,6 +2271,126 @@ ${paymentStatusText}
       // Handle window resize
       window.addEventListener('resize', () => {
         goToSlide(currentSlide);
+      });
+    }
+    
+    // Initialize WhatsApp review carousel
+    function initializeWhatsappReviewCarousel() {
+      // Image URLs for WhatsApp reviews - Updated with provided URLs
+      const whatsappReviewImages = [
+        'https://i.imgur.com/3U5j0Xz.png',
+        'https://i.imgur.com/GoXABSV.png',
+        'https://i.imgur.com/kTQ1KnS.png',
+        'https://i.imgur.com/I3zIxXr.png',
+        'https://i.imgur.com/oDBB0yV.png'
+      ];
+      
+      const whatsappReviewCarousel = document.getElementById('whatsappReviewCarousel');
+      const indicatorsContainer = document.getElementById('whatsappReviewIndicators');
+      
+      // Clear existing content
+      whatsappReviewCarousel.innerHTML = '';
+      indicatorsContainer.innerHTML = '';
+      
+      // Create slides (1 image per slide)
+      whatsappReviewImages.forEach((imageUrl, index) => {
+        const slide = document.createElement('div');
+        slide.className = 'whatsapp-review-slide';
+        slide.dataset.slideIndex = index;
+        
+        // Create image container
+        const imageContainer = document.createElement('div');
+        imageContainer.className = 'whatsapp-review-image';
+        
+        const image = document.createElement('img');
+        image.src = imageUrl;
+        image.alt = `WhatsApp Review ${index + 1}`;
+        
+        // Removed overlay text as requested
+        
+        imageContainer.appendChild(image);
+        slide.appendChild(imageContainer);
+        
+        whatsappReviewCarousel.appendChild(slide);
+        
+        // Create indicator dot
+        const indicator = document.createElement('button');
+        indicator.className = `w-3 h-3 rounded-full transition-colors duration-300 ${
+          index === 0 ? 'bg-red-600' : 'bg-gray-300'
+        }`;
+        indicator.dataset.slideIndex = index;
+        indicator.addEventListener('click', () => goToWhatsappSlide(index));
+        indicatorsContainer.appendChild(indicator);
+      });
+      
+      // Auto-slide functionality
+      let currentSlide = 0;
+      let autoSlideInterval;
+      
+      function goToWhatsappSlide(slideIndex) {
+        // Update current slide
+        currentSlide = slideIndex;
+        
+        // Scroll to slide
+        const slideWidth = whatsappReviewCarousel.querySelector('.whatsapp-review-slide').offsetWidth;
+        whatsappReviewCarousel.scrollTo({
+          left: slideIndex * slideWidth,
+          behavior: 'smooth'
+        });
+        
+        // Update indicators
+        indicatorsContainer.querySelectorAll('button').forEach((indicator, index) => {
+          if (index === slideIndex) {
+            indicator.classList.remove('bg-gray-300');
+            indicator.classList.add('bg-red-600');
+          } else {
+            indicator.classList.remove('bg-red-600');
+            indicator.classList.add('bg-gray-300');
+          }
+        });
+        
+        // Reset auto-slide timer
+        resetWhatsappAutoSlide();
+      }
+      
+      function nextWhatsappSlide() {
+        currentSlide = (currentSlide + 1) % whatsappReviewImages.length;
+        goToWhatsappSlide(currentSlide);
+      }
+      
+      function prevWhatsappSlide() {
+        currentSlide = (currentSlide - 1 + whatsappReviewImages.length) % whatsappReviewImages.length;
+        goToWhatsappSlide(currentSlide);
+      }
+      
+      function startWhatsappAutoSlide() {
+        autoSlideInterval = setInterval(nextWhatsappSlide, 5000); // Change slide every 5 seconds
+      }
+      
+      function resetWhatsappAutoSlide() {
+        clearInterval(autoSlideInterval);
+        startWhatsappAutoSlide();
+      }
+      
+      // Navigation buttons
+      document.getElementById('prevWhatsappReview').addEventListener('click', prevWhatsappSlide);
+      document.getElementById('nextWhatsappReview').addEventListener('click', nextWhatsappSlide);
+      
+      // Pause auto-slide on hover
+      whatsappReviewCarousel.addEventListener('mouseenter', () => {
+        clearInterval(autoSlideInterval);
+      });
+      
+      whatsappReviewCarousel.addEventListener('mouseleave', () => {
+        startWhatsappAutoSlide();
+      });
+      
+      // Start auto-slide
+      startWhatsappAutoSlide();
+      
+      // Handle window resize
+      window.addEventListener('resize', () => {
+        goToWhatsappSlide(currentSlide);
       });
     }
   </script>
