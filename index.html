@@ -49,8 +49,10 @@
     /* Responsive adjustments */
     @media (max-width: 640px) {
       .vertical-video-container {
-        max-width: 280px;
-        height: 498px;
+        max-width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        margin: 0;
       }
     }
     /* Video controls */
@@ -118,6 +120,26 @@
     }
     .sound-indicator i {
       margin-right: 5px;
+    }
+    
+    /* Video overlay - Updated for top center position */
+    .video-overlay {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(229, 62, 62, 0.8);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-align: center;
+      z-index: 10;
+      pointer-events: none;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      white-space: nowrap;
     }
     
     /* Image zoom modal styles */
@@ -462,6 +484,47 @@
       margin-top: 0.5rem;
     }
     
+    /* Sold out badge - Updated for diagonal overlay */
+    .sold-out-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 5;
+      pointer-events: none;
+    }
+    
+    .sold-out-text {
+      background-color: #ef4444;
+      color: white;
+      font-weight: bold;
+      padding: 8px 16px;
+      transform: rotate(-45deg);
+      position: absolute;
+      top: 20px;
+      left: -30px;
+      width: 150px;
+      text-align: center;
+      font-size: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Disable interaction for sold out product */
+    .product-card[data-product="G-SHOCK DW-5600 Biru"] .quantity-btn {
+      pointer-events: none;
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .product-card[data-product="G-SHOCK DW-5600 Biru"] .deselect-btn {
+      display: none;
+    }
+    
     /* Customer info modal styles */
     .customer-info-modal {
       position: fixed;
@@ -650,6 +713,19 @@
         opacity: .5;
       }
     }
+    
+    /* Badge style for Buy 2 Free COD */
+    .promo-badge {
+      display: inline-block;
+      background-color: #ef4444;
+      color: white;
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+      box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
@@ -670,10 +746,12 @@
       <a href="#order-section" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 px-6 rounded-full shadow-lg transition pulse-animation" id="orderNowBtn">
         Order Sekarang
       </a>
+      <!-- Added text below Order button -->
+      <p class="mt-4 text-lg font-semibold">boleh COD Jam sampai Baru Bayar</p>
     </section>
- <!-- Video Section -->
+    
+    <!-- Video Section - Removed heading -->
     <section class="py-10 px-6 text-center">
-      <h2 class="text-2xl font-bold mb-6">🎥 Saksikan Video Produk</h2>
       <div class="vertical-video-container">
         <!-- Replace YOUR_IMGUR_VIDEO_ID with your actual Imgur video ID -->
         <video 
@@ -699,9 +777,14 @@
             <span id="soundText">Audio diaktifkan</span>
           </div>
         </div>
+        <!-- Updated overlay positioned at top center -->
+        <div class="video-overlay">
+          Jam yang tengah Promo
+        </div>
       </div>
     </section>
-        <!-- Masalah Customer Section -->
+    
+    <!-- Masalah Customer Section -->
     <section class="py-12 px-6 bg-gray-100">
       <h3 class="text-2xl font-bold text-center mb-8">❌ Masalah Biasa Pelanggan</h3>
       <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -719,6 +802,7 @@
         </div>
       </div>
     </section>
+    
     <!-- Penyelesaian Section -->
     <section class="bg-gradient-to-r from-red-600 to-red-400 py-12 px-6 text-white">
       <h3 class="text-3xl font-extrabold text-center mb-8 drop-shadow-lg">✅ Penyelesaian Dari HasraStore</h3>
@@ -741,6 +825,7 @@
         </div>
       </div>
     </section>
+    
     <!-- Produk Section -->
     <section class="py-12 px-6">
       <h2 class="text-2xl font-bold text-center mb-8">📦 Pilihan Produk</h2>
@@ -771,6 +856,7 @@
         </div>
       </div>
     </section>
+    
     <!-- Review Section -->
     <section class="py-12 px-6 bg-gray-100">
       <div class="max-w-6xl mx-auto">
@@ -808,6 +894,7 @@
         </div>
       </div>
     </section>
+    
     <!-- Order Form -->
     <section id="order-section" class="py-12 px-6 bg-white scroll-mt-20">
       <h2 class="text-3xl font-extrabold text-center mb-6">🛒 Borang Tempahan</h2>
@@ -815,6 +902,10 @@
         <!-- Product Selection with Images -->
         <div>
           <label class="font-semibold block mb-2">Pilih Produk & Kuantiti</label>
+          <!-- Added promo badge -->
+          <div class="promo-badge">
+            <i class="fas fa-gift mr-1"></i> Buy 2 Free COD
+          </div>
           
           <!-- Product 1: GA-110 Hitam -->
           <div class="product-card" data-product="GA-110 Hitam">
@@ -838,6 +929,21 @@
             </div>
             <img src="https://i.imgur.com/n9UdOUF.jpeg?w=200" alt="GA-100 Merah">
             <h3 class="font-bold">G-SHOCK GA-100 Merah</h3>
+            <p class="text-sm text-gray-600 mb-1">RM69.90</p>
+            <p class="text-xs text-gray-500 mb-2">Bilangan</p>
+            <div class="quantity-selector">
+              <div class="quantity-btn" data-quantity="1">1</div>
+              <div class="quantity-btn" data-quantity="2">2</div>
+            </div>
+          </div>
+          
+          <!-- Product 3: Sold Out with diagonal overlay -->
+          <div class="product-card" data-product="G-SHOCK DW-5600 Biru">
+            <div class="sold-out-overlay">
+              <div class="sold-out-text">SOLD OUT</div>
+            </div>
+            <img src="https://i.imgur.com/yeI9gGf.jpeg" alt="G-SHOCK GA-110 OP">
+            <h3 class="font-bold">G-SHOCK GA-110 OP</h3>
             <p class="text-sm text-gray-600 mb-1">RM69.90</p>
             <p class="text-xs text-gray-500 mb-2">Bilangan</p>
             <div class="quantity-selector">
@@ -1078,6 +1184,12 @@
         value: 69.90,
         currency: 'MYR'
       });
+      
+      // Show fake order notification immediately on page load
+      showFakeOrderNotification();
+      
+      // Then continue with the interval
+      setInterval(showFakeOrderNotification, 15000); // Every 15 seconds
     });
     
     // Track add to cart when product is selected
@@ -1215,48 +1327,52 @@
     }
     
     // Function to validate form and return the first invalid field
-    function validateForm() {
-      const requiredFields = [
-        { id: 'modalCustomerName', name: 'Nama' },
-        { id: 'modalCustomerPhone', name: 'No Telefon' },
-        { id: 'modalCustomerAddress', name: 'Alamat' },
-        { id: 'modalPoskod', name: 'Poskod' },
-        { id: 'modalCustomerState', name: 'Negeri' }
-      ];
-      
-      // Check if at least one product is selected
-      const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
-      const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
-      
-      if (ga110Qty === 0 && ga100Qty === 0) {
-        return { element: document.querySelector('.product-card'), message: 'Sila pilih sekurang-kurangnya satu produk' };
-      }
-      
-      // Check confirmation checkbox
-      const confirmationCheckbox = document.getElementById('modalConfirmation');
-      if (!confirmationCheckbox.checked) {
-        return { element: confirmationCheckbox, message: 'Sila sahkan semua maklumat adalah betul' };
-      }
-      
-      // Check required fields
-      for (const field of requiredFields) {
-        const element = document.getElementById(field.id);
-        if (!element.value.trim()) {
-          return { element, message: `Sila isi ${field.name}` };
-        }
-      }
-      
-      // Validate postcode format
-      const poskodValue = document.getElementById('modalPoskod').value.trim();
-      if (!validatePostcode(poskodValue)) {
-        return { 
-          element: document.getElementById('modalPoskod'), 
-          message: 'Poskod tidak sah! Pastikan format 5 digit angka sahaja.' 
-        };
-      }
-      
-      return null; // All fields are valid
+    // Replace your existing validateForm function with this corrected version
+function validateForm() {
+  const requiredFields = [
+    { id: 'modalCustomerName', name: 'Nama' },
+    { id: 'modalCustomerPhone', name: 'No Telefon' },
+    { id: 'modalCustomerAddress', name: 'Alamat' },
+    { id: 'modalPoskod', name: 'Poskod' },
+    { id: 'modalCustomerState', name: 'Negeri' }
+  ];
+  
+  // Check if at least one product is selected
+  const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
+  const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
+  
+  if (ga110Qty === 0 && ga100Qty === 0) {
+    return { element: document.querySelector('.product-card'), message: 'Sila pilih sekurang-kurangnya satu produk' };
+  }
+  
+  // Only check confirmation checkbox if modal is visible
+  const customerInfoModal = document.getElementById('customerInfoModal');
+  if (customerInfoModal.classList.contains('active')) {
+    const confirmationCheckbox = document.getElementById('modalConfirmation');
+    if (!confirmationCheckbox.checked) {
+      return { element: confirmationCheckbox, message: 'Sila sahkan semua maklumat adalah betul' };
     }
+    
+    // Check required fields only when modal is active
+    for (const field of requiredFields) {
+      const element = document.getElementById(field.id);
+      if (!element.value.trim()) {
+        return { element, message: `Sila isi ${field.name}` };
+      }
+    }
+    
+    // Validate postcode format
+    const poskodValue = document.getElementById('modalPoskod').value.trim();
+    if (!validatePostcode(poskodValue)) {
+      return { 
+        element: document.getElementById('modalPoskod'), 
+        message: 'Poskod tidak sah! Pastikan format 5 digit angka sahaja.' 
+      };
+    }
+  }
+  
+  return null; // All fields are valid
+}
     
     // Fungsi untuk menghantar notifikasi ke Telegram
     async function sendTelegramNotification(orderData) {
@@ -1442,312 +1558,474 @@ ${paymentStatusText}
           return false;
         }
       } catch (error) {
-        console.error('Error creating bill:', error);
-        showErrorPopup('Ralat: Berlaku masalah semasa memproses tempahan. Sila cuba lagi.');
+        console.error('Error creating ToyyibPay bill:', error);
+        showErrorPopup('Ralat: Tidak dapat menyambung ke pembekal pembayaran. Sila cuba lagi.');
         return false;
       }
     }
     
-    // Function to handle payment completion
-    function handlePaymentCompletion() {
-      // Retrieve order data from sessionStorage
-      const orderData = JSON.parse(sessionStorage.getItem('pendingOrder'));
+    // Function to show fake order notification
+    function showFakeOrderNotification() {
+      const notification = document.getElementById('fakeOrderNotification');
+      const names = ['Ahmad', 'Siti', 'Mohd', 'Aisyah', 'Rizal', 'Linda', 'Faris', 'Maya'];
+      const locations = ['Kuala Lumpur', 'Selangor', 'Johor', 'Penang', 'Perak', 'Sabah', 'Sarawak'];
+      const products = ['GA-110 Hitam', 'GA-100 Merah'];
       
-      if (orderData) {
-        // Update payment status
-        orderData.paymentStatus = 'Paid';
-        
-        // Send Telegram notification with payment status
-        sendTelegramNotification(orderData).then(success => {
-          if (success) {
-            // Show success modal
-            document.getElementById('successMessage').textContent = 
-              'Pembayaran berjaya! Terima kasih atas tempahan anda. Kami akan memproses pesanan anda segera.';
-            document.getElementById('successModal').classList.remove('hidden');
-          } else {
-            showErrorPopup('Pembayaran berjaya tetapi gagal menghantar notifikasi. Kami akan menghubungi anda tidak lama lagi.');
-          }
-        });
-        
-        // Clear sessionStorage
-        sessionStorage.removeItem('pendingOrder');
-      }
+      const randomName = names[Math.floor(Math.random() * names.length)];
+      const randomLocation = locations[Math.floor(Math.random() * locations.length)];
+      const randomProduct = products[Math.floor(Math.random() * products.length)];
+      
+      document.getElementById('fakeCustomerName').textContent = randomName;
+      document.getElementById('fakeCustomerLocation').textContent = randomLocation;
+      document.getElementById('fakeProductName').textContent = randomProduct;
+      
+      notification.classList.remove('hidden');
+      
+      // Animate in
+      setTimeout(() => {
+        notification.classList.remove('translate-x-full', 'opacity-0', 'scale-95');
+        notification.classList.add('translate-x-0', 'opacity-100', 'scale-100');
+      }, 10);
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        hideFakeOrderNotification();
+      }, 5000);
     }
     
-    // Function to update order summary
-    function updateOrderSummary() {
-      const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
-      const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
-      const paymentMethod = document.getElementById('payment').value;
+    function hideFakeOrderNotification() {
+      const notification = document.getElementById('fakeOrderNotification');
+      notification.classList.add('translate-x-full', 'opacity-0', 'scale-95');
+      notification.classList.remove('translate-x-0', 'opacity-100', 'scale-100');
       
-      const orderSummaryContent = document.getElementById('orderSummaryContent');
-      const totalAmountEl = document.getElementById('totalAmount');
-      
-      // Clear previous content
-      orderSummaryContent.innerHTML = '';
-      
-      let total = 0;
-      let hasItems = false;
-      
-      // Add GA-110 Hitam if quantity > 0
-      if (ga110Qty > 0) {
-        const itemPrice = 69.90;
-        const itemTotal = ga110Qty * itemPrice;
-        total += itemTotal;
-        hasItems = true;
-        
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'order-summary-item';
-        itemDiv.innerHTML = `
-          <span>G-SHOCK GA-110 Hitam (x${ga110Qty})</span>
-          <span>RM${itemTotal.toFixed(2)}</span>
-        `;
-        orderSummaryContent.appendChild(itemDiv);
-      }
-      
-      // Add GA-100 Merah if quantity > 0
-      if (ga100Qty > 0) {
-        const itemPrice = 69.90;
-        const itemTotal = ga100Qty * itemPrice;
-        total += itemTotal;
-        hasItems = true;
-        
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'order-summary-item';
-        itemDiv.innerHTML = `
-          <span>G-SHOCK GA-100 Merah (x${ga100Qty})</span>
-          <span>RM${itemTotal.toFixed(2)}</span>
-        `;
-        orderSummaryContent.appendChild(itemDiv);
-      }
-      
-      // Add COD fee if applicable
-      if (paymentMethod === 'COD' && hasItems) {
-        total += 5;
-        
-        const feeDiv = document.createElement('div');
-        feeDiv.className = 'order-summary-item';
-        feeDiv.innerHTML = `
-          <span>Bayaran COD</span>
-          <span>RM5.00</span>
-        `;
-        orderSummaryContent.appendChild(feeDiv);
-      }
-      
-      // Update total
-      totalAmountEl.textContent = `RM${total.toFixed(2)}`;
-      
-      // Show message if no items selected
-      if (!hasItems) {
-        orderSummaryContent.innerHTML = `
-          <div class="order-summary-item">
-            <span>Tiada produk dipilih</span>
-            <span>RM0.00</span>
-          </div>
-        `;
-      }
+      setTimeout(() => {
+        notification.classList.add('hidden');
+      }, 300);
     }
     
-    // Initialize order summary
-    updateOrderSummary();
+    // Function to show COD notification
+    function showCodNotification(customerName, productName) {
+      const notification = document.getElementById('codNotification');
+      
+      document.getElementById('customerName').textContent = customerName;
+      document.getElementById('productName').textContent = productName;
+      
+      notification.classList.remove('hidden');
+      
+      // Animate in
+      setTimeout(() => {
+        notification.classList.remove('translate-x-full', 'opacity-0', 'scale-95');
+        notification.classList.add('translate-x-0', 'opacity-100', 'scale-100');
+      }, 10);
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        hideCodNotification();
+      }, 5000);
+    }
     
-    // Product selection functionality
-    document.querySelectorAll('.product-card').forEach(card => {
-      const quantityBtns = card.querySelectorAll('.quantity-btn');
-      const deselectBtn = card.querySelector('.deselect-btn');
-      const product = card.dataset.product;
+    function hideCodNotification() {
+      const notification = document.getElementById('codNotification');
+      notification.classList.add('translate-x-full', 'opacity-0', 'scale-95');
+      notification.classList.remove('translate-x-0', 'opacity-100', 'scale-100');
       
-      quantityBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-          const quantity = parseInt(this.dataset.quantity);
-          
-          // Toggle active state
-          quantityBtns.forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-          
-          // Update hidden input
-          if (product === 'GA-110 Hitam') {
-            document.getElementById('ga110Quantity').value = quantity;
-          } else if (product === 'GA-100 Merah') {
-            document.getElementById('ga100Quantity').value = quantity;
-          }
-          
-          // Mark card as selected
-          card.classList.add('selected');
-          
-          // Update order summary
-          updateOrderSummary();
-        });
-      });
-      
-      // Deselect button
-      deselectBtn.addEventListener('click', function() {
-        // Remove active state from all quantity buttons
+      setTimeout(() => {
+        notification.classList.add('hidden');
+      }, 300);
+    }
+    
+    // Initialize product selection
+   document.addEventListener('DOMContentLoaded', function() {
+  // Product selection logic
+  const productCards = document.querySelectorAll('.product-card');
+  
+  productCards.forEach(card => {
+    // Skip sold out product
+    if (card.dataset.product === 'G-SHOCK DW-5600 Biru') {
+      return;
+    }
+    
+    const quantityBtns = card.querySelectorAll('.quantity-btn');
+    const deselectBtn = card.querySelector('.deselect-btn');
+    
+    quantityBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Remove active class from all buttons in this card
         quantityBtns.forEach(b => b.classList.remove('active'));
         
-        // Reset hidden input
-        if (product === 'GA-110 Hitam') {
-          document.getElementById('ga110Quantity').value = 0;
-        } else if (product === 'GA-100 Merah') {
-          document.getElementById('ga100Quantity').value = 0;
-        }
+        // Add active class to clicked button
+        this.classList.add('active');
         
-        // Remove selected class
-        card.classList.remove('selected');
+        // Mark card as selected
+        card.classList.add('selected');
         
         // Update order summary
         updateOrderSummary();
       });
     });
     
-    // Payment method change
-    document.getElementById('payment').addEventListener('change', updateOrderSummary);
-    
-    // Order form submission
-    document.getElementById('orderForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+    deselectBtn.addEventListener('click', function() {
+      // Remove active class from all buttons
+      quantityBtns.forEach(b => b.classList.remove('active'));
       
-      // Show customer info modal
-      document.getElementById('customerInfoModal').classList.add('active');
-    });
-    
-    // Close customer info modal
-    document.getElementById('closeCustomerModal').addEventListener('click', function() {
-      document.getElementById('customerInfoModal').classList.remove('active');
-    });
-    
-    document.getElementById('cancelCustomerInfo').addEventListener('click', function() {
-      document.getElementById('customerInfoModal').classList.remove('active');
-    });
-    
-    // Confirm order
-    document.getElementById('confirmCustomerInfo').addEventListener('click', async function() {
-      const validationError = validateForm();
+      // Remove selected class from card
+      card.classList.remove('selected');
       
-      if (validationError) {
+      // Update order summary
+      updateOrderSummary();
+    });
+  });
+      
+      // Initialize review carousel
+      initializeReviewCarousel();
+      
+      // Initialize image zoom modal
+      initializeImageZoomModal();
+      
+      // Initialize video controls
+      initializeVideoControls();
+      
+      // Initialize order form
+      initializeOrderForm();
+    });
+    
+    // Function to update order summary
+    function updateOrderSummary() {
+  const productCards = document.querySelectorAll('.product-card');
+  const orderSummaryContent = document.getElementById('orderSummaryContent');
+  const totalAmountEl = document.getElementById('totalAmount');
+  
+  let totalAmount = 0;
+  let totalQuantity = 0;
+  let orderItems = [];
+  
+  productCards.forEach(card => {
+    // Skip sold out product
+    if (card.dataset.product === 'G-SHOCK DW-5600 Biru') {
+      return;
+    }
+    
+    const productName = card.dataset.product;
+    const activeBtn = card.querySelector('.quantity-btn.active');
+    
+    if (activeBtn) {
+      const quantity = parseInt(activeBtn.dataset.quantity);
+      const price = 69.90;
+      const itemTotal = price * quantity;
+      
+      totalAmount += itemTotal;
+      totalQuantity += quantity;
+      
+      orderItems.push({
+        name: productName,
+        quantity: quantity,
+        price: price,
+        total: itemTotal
+      });
+      
+      // Update hidden inputs
+      if (productName === 'GA-110 Hitam') {
+        document.getElementById('ga110Quantity').value = quantity;
+      } else if (productName === 'GA-100 Merah') {
+        document.getElementById('ga100Quantity').value = quantity;
+      }
+    } else {
+      // Reset hidden inputs if not selected
+      if (productName === 'GA-110 Hitam') {
+        document.getElementById('ga110Quantity').value = 0;
+      } else if (productName === 'GA-100 Merah') {
+        document.getElementById('ga100Quantity').value = 0;
+      }
+    }
+  });
+  
+  // Update order summary display
+  if (orderItems.length === 0) {
+    orderSummaryContent.innerHTML = `
+      <div class="order-summary-item">
+        <span>Tiada produk dipilih</span>
+        <span>RM0.00</span>
+      </div>
+    `;
+  } else {
+    let summaryHTML = '';
+    orderItems.forEach(item => {
+      summaryHTML += `
+        <div class="order-summary-item">
+          <span>${item.name} x${item.quantity}</span>
+          <span>RM${item.total.toFixed(2)}</span>
+        </div>
+      `;
+    });
+    orderSummaryContent.innerHTML = summaryHTML;
+  }
+  
+  // Add COD fee if applicable
+  const paymentMethod = document.getElementById('payment').value;
+  if (paymentMethod === 'COD' && totalAmount > 0) {
+    // Check if total quantity is 2 or more to apply free COD
+    if (totalQuantity >= 2) {
+      orderSummaryContent.innerHTML += `
+        <div class="order-summary-item">
+          <span>Bayaran COD (Free)</span>
+          <span><s>RM10.00</s></span>
+        </div>
+      `;
+    } else {
+      orderSummaryContent.innerHTML += `
+        <div class="order-summary-item">
+          <span>Bayaran COD</span>
+          <span>RM5.00</span>
+        </div>
+      `;
+      totalAmount += 5;
+    }
+  }
+  
+  // Update total amount
+  totalAmountEl.textContent = `RM${totalAmount.toFixed(2)}`;
+}
+    
+    // Initialize order form
+    function initializeOrderForm() {
+  const orderForm = document.getElementById('orderForm');
+  const paymentSelect = document.getElementById('payment');
+  
+  // Update order summary when payment method changes
+  paymentSelect.addEventListener('change', updateOrderSummary);
+  
+  // Handle form submission
+  orderForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Only validate product selection at this stage
+    const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
+    const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
+    
+    if (ga110Qty === 0 && ga100Qty === 0) {
+      showErrorPopup('Sila pilih sekurang-kurangnya satu produk');
+      return;
+    }
+    
+    // Check payment method
+    if (!paymentSelect.value) {
+      showErrorPopup('Sila pilih kaedah pembayaran');
+      return;
+    }
+    
+    // Show customer info modal
+    document.getElementById('customerInfoModal').classList.add('active');
+  });
+  
+  // Handle customer info modal
+  const customerInfoModal = document.getElementById('customerInfoModal');
+  const closeCustomerModal = document.getElementById('closeCustomerModal');
+  const cancelCustomerInfo = document.getElementById('cancelCustomerInfo');
+  const confirmCustomerInfo = document.getElementById('confirmCustomerInfo');
+  
+  closeCustomerModal.addEventListener('click', function() {
+    customerInfoModal.classList.remove('active');
+  });
+  
+  cancelCustomerInfo.addEventListener('click', function() {
+    customerInfoModal.classList.remove('active');
+  });
+  
+  confirmCustomerInfo.addEventListener('click', async function() {
+    // Validate customer info form
+    const validationError = validateForm();
+    if (validationError) {
+      showErrorPopup(validationError.message);
+      if (validationError.element) {
         scrollToAndHighlight(validationError.element);
-        showErrorPopup(validationError.message);
-        return;
+      }
+      return;
+    }
+    
+    // Get order data
+    const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
+    const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
+    
+    let product = '';
+    let quantity = 0;
+    
+    if (ga110Qty > 0) {
+      product = 'GA-110 Hitam';
+      quantity = ga110Qty;
+    } else if (ga100Qty > 0) {
+      product = 'GA-100 Merah';
+      quantity = ga100Qty;
+    }
+    
+    const price = 69.90;
+    let total = price * quantity;
+    
+    const paymentMethod = document.getElementById('payment').value;
+    // Check if total quantity is 2 or more to apply free COD
+    if (paymentMethod === 'COD' && quantity < 2) {
+      total += 5;
+    }
+    
+    const customerName = document.getElementById('modalCustomerName').value;
+    const customerPhone = document.getElementById('modalCustomerPhone').value;
+    const customerAddress = document.getElementById('modalCustomerAddress').value;
+    const poskod = document.getElementById('modalPoskod').value;
+    const customerState = document.getElementById('modalCustomerState').value;
+    
+    const orderData = {
+      product: product,
+      quantity: quantity,
+      total: total,
+      paymentMethod: paymentMethod,
+      customerName: customerName,
+      customerPhone: customerPhone,
+      customerAddress: customerAddress,
+      poskod: poskod,
+      customerState: customerState,
+      paymentStatus: paymentMethod === 'Online' ? 'Pending' : 'Pending'
+    };
+    
+    // Show loading overlay
+    document.getElementById('loadingOverlay').classList.remove('hidden');
+    
+    try {
+      // Send notification to Telegram
+      await sendTelegramNotification(orderData);
+      
+      // If payment method is Online, redirect to ToyyibPay
+      if (paymentMethod === 'Online') {
+        const redirectSuccess = await redirectToToyyibPay(orderData);
+        
+        if (redirectSuccess) {
+          // Hide loading overlay
+          document.getElementById('loadingOverlay').classList.add('hidden');
+          
+          // Keep customer info modal open until redirect
+          return;
+        } else {
+          // Hide loading overlay
+          document.getElementById('loadingOverlay').classList.add('hidden');
+          
+          // Show error
+          showErrorPopup('Ralat semasa memproses pembayaran. Sila cuba lagi.');
+          return;
+        }
       }
       
-      // Get form data
-      const customerName = document.getElementById('modalCustomerName').value;
-      const customerPhone = document.getElementById('modalCustomerPhone').value;
-      const customerAddress = document.getElementById('modalCustomerAddress').value;
-      const poskod = document.getElementById('modalPoskod').value;
-      const customerState = document.getElementById('modalCustomerState').value;
-      const paymentMethod = document.getElementById('payment').value;
+      // If COD, show success and COD notification
+      document.getElementById('loadingOverlay').classList.add('hidden');
       
-      // Get product quantities
-      const ga110Qty = parseInt(document.getElementById('ga110Quantity').value) || 0;
-      const ga100Qty = parseInt(document.getElementById('ga100Quantity').value) || 0;
+      // Show success modal
+      const successModal = document.getElementById('successModal');
+      successModal.classList.remove('hidden');
       
-      // Determine product and quantity
-      let product = '';
-      let quantity = 0;
-      let contentIds = [];
+      // Show COD notification
+      showCodNotification(customerName, product);
       
-      if (ga110Qty > 0 && ga100Qty > 0) {
-        product = 'GA-110 Hitam & GA-100 Merah';
-        quantity = ga110Qty + ga100Qty;
-        contentIds = ['GA110', 'GA100'];
-      } else if (ga110Qty > 0) {
-        product = 'GA-110 Hitam';
-        quantity = ga110Qty;
-        contentIds = ['GA110'];
-      } else if (ga100Qty > 0) {
-        product = 'GA-100 Merah';
-        quantity = ga100Qty;
-        contentIds = ['GA100'];
-      }
-      
-      // Calculate total
-      let total = 0;
-      if (ga110Qty > 0) total += ga110Qty * 69.90;
-      if (ga100Qty > 0) total += ga100Qty * 69.90;
-      if (paymentMethod === 'COD') total += 5;
-      
-      // Create order data object
-      const orderData = {
-        product,
-        quantity,
-        total,
-        customerName,
-        customerPhone,
-        customerAddress,
-        poskod,
-        customerState,
-        paymentMethod,
-        paymentStatus: paymentMethod === 'COD' ? 'Pending' : 'Pending',
-        orderId: paymentMethod === 'COD' ? 'COD_' + Date.now() : 'ONLINE_' + Date.now()
-      };
-      
-      // Show loading overlay
-      document.getElementById('loadingOverlay').classList.remove('hidden');
+      // Reset form
+      orderForm.reset();
+      document.querySelectorAll('.product-card').forEach(card => {
+        card.classList.remove('selected');
+        card.querySelectorAll('.quantity-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+      });
+      updateOrderSummary();
       
       // Close customer info modal
-      document.getElementById('customerInfoModal').classList.remove('active');
+      customerInfoModal.classList.remove('active');
       
-      // Handle different payment methods
-      if (paymentMethod === 'COD') {
-        // Track COD purchase as conversion in Meta Ads
-        fbq('track', 'Purchase', {
-          content_name: product,
-          content_category: 'Watches',
-          content_ids: contentIds,
-          content_type: 'product',
-          value: total,
-          currency: 'MYR',
-          order_id: orderData.orderId
-        });
-        
-        // Send Telegram notification
-        const success = await sendTelegramNotification(orderData);
-        
-        // Hide loading overlay
-        document.getElementById('loadingOverlay').classList.add('hidden');
-        
-        if (success) {
-          // Show success modal
-          document.getElementById('successMessage').textContent = 
-            'Tempahan berjaya! Kami akan menghubungi anda untuk pengesahan.';
-          document.getElementById('successModal').classList.remove('hidden');
-          
-          // Show COD notification
-          document.getElementById('customerName').textContent = customerName;
-          document.getElementById('productName').textContent = product;
-          document.getElementById('codNotification').classList.remove('hidden');
-          document.getElementById('codNotification').classList.add('opacity-100', 'scale-100', 'translate-x-0');
-          
-          // Hide notification after 5 seconds
-          setTimeout(() => {
-            document.getElementById('codNotification').classList.add('hidden');
-          }, 5000);
-        } else {
-          showErrorPopup('Ralat: Gagal menghantar notifikasi. Sila cuba lagi.');
-        }
-      } else if (paymentMethod === 'Online') {
-        // Store order data in sessionStorage for payment pages
-        sessionStorage.setItem('pendingOrder', JSON.stringify(orderData));
-        
-        // DO NOT track purchase here - will be tracked in payment-success.html
-        
-        // Redirect to ToyyibPay
-        const success = await redirectToToyyibPay(orderData);
-        
-        // Hide loading overlay
-        document.getElementById('loadingOverlay').classList.add('hidden');
-        
-        if (!success) {
-          showErrorPopup('Ralat: Gagal memproses pembayaran. Sila cuba lagi.');
-        }
-      }
-    });
+      // Track purchase event for Meta Pixel
+      fbq('track', 'Purchase', {
+        content_name: product,
+        content_category: 'Watches',
+        content_ids: [product === 'GA-110 Hitam' ? 'GA110' : 'GA100'],
+        content_type: 'product',
+        value: total,
+        currency: 'MYR',
+        num_items: quantity
+      });
+      
+    } catch (error) {
+      console.error('Error processing order:', error);
+      document.getElementById('loadingOverlay').classList.add('hidden');
+      showErrorPopup('Ralat semasa memproses tempahan. Sila cuba lagi.');
+    }
+  });
+  
+  // Close success modal
+  document.getElementById('closeModal').addEventListener('click', function() {
+    document.getElementById('successModal').classList.add('hidden');
+  });
+  
+  // Close error popup
+  document.getElementById('closeErrorPopup').addEventListener('click', hideErrorPopup);
+}
     
-    // Close success modal
-    document.getElementById('closeModal').addEventListener('click', function() {
-      document.getElementById('successModal').classList.add('hidden');
-    });
+    // Initialize video controls
+    function initializeVideoControls() {
+      const video = document.getElementById('productVideo');
+      const soundButton = document.getElementById('soundButton');
+      const soundIndicator = document.getElementById('soundIndicator');
+      
+      soundButton.addEventListener('click', function() {
+        if (video.muted) {
+          video.muted = false;
+          soundButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+          
+          // Show sound indicator
+          soundIndicator.classList.add('show');
+          setTimeout(() => {
+            soundIndicator.classList.remove('show');
+          }, 2000);
+        } else {
+          video.muted = true;
+          soundButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        }
+      });
+    }
+    
+    // Initialize image zoom modal
+    function initializeImageZoomModal() {
+      const imageZoomModal = document.getElementById('imageZoomModal');
+      const zoomedImage = document.getElementById('zoomedImage');
+      const imageNavPrev = document.getElementById('imageNavPrev');
+      const imageNavNext = document.getElementById('imageNavNext');
+      
+      let currentImageIndex = 0;
+      let productImages = [];
+      
+      // Get all product images
+      document.querySelectorAll('.product-image').forEach(img => {
+        productImages.push(img.src);
+      });
+      
+      // Open zoom modal when clicking on product images
+      document.querySelectorAll('.product-image').forEach((img, index) => {
+        img.addEventListener('click', function() {
+          currentImageIndex = index;
+          zoomedImage.src = this.src;
+          imageZoomModal.classList.add('active');
+        });
+      });
+      
+      // Close zoom modal
+      imageZoomModal.querySelector('.image-zoom-close').addEventListener('click', function() {
+        imageZoomModal.classList.remove('active');
+      });
+      
+      // Navigate to previous image
+      imageNavPrev.addEventListener('click', function() {
+        currentImageIndex = (currentImageIndex - 1 + productImages.length) % productImages.length;
+        zoomedImage.src = productImages[currentImageIndex];
+      });
+      
+      // Navigate to next image
+      imageNavNext.addEventListener('click', function() {
+        currentImageIndex = (currentImageIndex + 1) % productImages.length;
+        zoomedImage.src = productImages[currentImageIndex];
+      });
+    }
     
     // Initialize review carousel with auto-slide and indicators
     function initializeReviewCarousel() {
@@ -1756,7 +2034,7 @@ ${paymentStatusText}
         { name: 'Nurul Huda', rating: 5, comment: 'Order hari Isnin, Rabu dah sampai. Tak sangka secepat ni. Seller responsif, reply semua soalan dengan sabar. Barang sampai dalam keadaan elok, jam pun cantik sangat' },
         { name: 'Mohd Safwan', rating: 5, comment: 'Tak sangka boleh dapat jam G-Shock harga bawah RM100 tapi kualiti macam original kedai. Berat dia ngam, design sporty, strap selesa. Warna merah ni memang rare, ramai tegur lawa. First time beli jam murah rasa puas hati macam beli mahal!' },
         { name: 'Farhan Rizqi', rating: 4, comment: 'Saya ambil COD sebab first time beli dengan seller ni. Ada caj sikit je untuk cash, tapi rasa berbaloi sebab barang sampai depan rumah baru bayar. Senang hati, tak risau scam. Jam pun lawa dan selesa dipakai.' },
-        { name: 'Nurul Huda', rating: 5, comment: 'Fungsi auto-light dia best. GA-100 merah ni standout, sesuai untuk gym, motor & jalan-jalan. Kawan-kawan pun tegur lawa. Harga mampu milik, rasa premium!' },
+        { name: 'Ismail', rating: 5, comment: 'Fungsi auto-light dia best. GA-100 merah ni standout, sesuai untuk gym, motor & jalan-jalan. Kawan-kawan pun tegur lawa. Harga mampu milik, rasa premium!' },
         { name: 'Farhan Hakim', rating: 5, comment: 'Dulu memang struggle nak cari jam untuk kerja site. Asyik beli jam murah, 2-3 bulan je dah rosak sebab terhentak, kena air hujan. Member recommend GA-100 merah ni, terus cuba. Memang puas hati! Ringan tapi rugged, display clear, water resistant pulak tu. Warna merah garang habis, ramai tegur lawa. Sekarang kerja lasak pun hati tenang!' },
         { name: 'Muhammad Danish', rating: 4, comment: 'Kerja site pun tak risau dah, jam ni tahan hentakan & air. Merah dia striking gila!' },
         { name: 'Zulkifli Ali', rating: 5, comment: 'Cari jam untuk hiking & outdoor activities, akhirnya jumpa jam ni. Air terjun pun tak risau! Sangat sesuai untuk orang adventure macam saya' },
@@ -1764,7 +2042,6 @@ ${paymentStatusText}
         { name: 'Kamaluddin Hassan', rating: 4, comment: 'Jam yang hebat untuk harga yang berpatutan. Sangat tahan lasak.' },
         { name: 'Fatimah Yusof', rating: 5, comment: 'Penghantaran super cepat! Jam cantik dan sesuai dengan gambar.' }
       ];
-
       // Generate random dates within the last 5 days
       const reviews = reviewData.map(review => {
         const daysAgo = Math.floor(Math.random() * 5); // 0-4 days ago
@@ -1780,7 +2057,6 @@ ${paymentStatusText}
           })
         };
       });
-
       const reviewCarousel = document.getElementById('reviewCarousel');
       const indicatorsContainer = document.getElementById('reviewIndicators');
       
@@ -1915,125 +2191,6 @@ ${paymentStatusText}
         goToSlide(currentSlide);
       });
     }
-
-    // Initialize the review carousel when the page loads
-    document.addEventListener('DOMContentLoaded', initializeReviewCarousel);
-    
-    // Video controls
-    const video = document.getElementById('productVideo');
-    const soundButton = document.getElementById('soundButton');
-    const soundIndicator = document.getElementById('soundIndicator');
-    
-    soundButton.addEventListener('click', function() {
-      if (video.muted) {
-        video.muted = false;
-        soundButton.innerHTML = '<i class="fas fa-volume-up"></i>';
-        soundIndicator.classList.add('show');
-        
-        // Hide indicator after 3 seconds
-        setTimeout(() => {
-          soundIndicator.classList.remove('show');
-        }, 3000);
-      } else {
-        video.muted = true;
-        soundButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
-      }
-    });
-    
-    // Image zoom modal
-    const imageZoomModal = document.getElementById('imageZoomModal');
-    const zoomedImage = document.getElementById('zoomedImage');
-    const imageNavPrev = document.getElementById('imageNavPrev');
-    const imageNavNext = document.getElementById('imageNavNext');
-    
-    // Get all product images
-    const productImages = document.querySelectorAll('.product-image');
-    let currentImageIndex = 0;
-    
-    // Open image zoom modal
-    productImages.forEach((img, index) => {
-      img.addEventListener('click', function() {
-        currentImageIndex = index;
-        zoomedImage.src = this.src;
-        imageZoomModal.classList.add('active');
-      });
-    });
-    
-    // Close image zoom modal
-    document.querySelector('.image-zoom-close').addEventListener('click', function() {
-      imageZoomModal.classList.remove('active');
-    });
-    
-    // Navigate images
-    imageNavPrev.addEventListener('click', function() {
-      currentImageIndex = (currentImageIndex - 1 + productImages.length) % productImages.length;
-      zoomedImage.src = productImages[currentImageIndex].src;
-    });
-    
-    imageNavNext.addEventListener('click', function() {
-      currentImageIndex = (currentImageIndex + 1) % productImages.length;
-      zoomedImage.src = productImages[currentImageIndex].src;
-    });
-    
-    // Close modal when clicking outside the image
-    imageZoomModal.addEventListener('click', function(e) {
-      if (e.target === imageZoomModal) {
-        imageZoomModal.classList.remove('active');
-      }
-    });
-    
-    // Close error popup
-    document.getElementById('closeErrorPopup').addEventListener('click', hideErrorPopup);
-    
-    // Smooth scroll for order now button
-    document.getElementById('orderNowBtn').addEventListener('click', function(e) {
-      e.preventDefault();
-      document.getElementById('order-section').scrollIntoView({ behavior: 'smooth' });
-    });
-    
-    // Generate fake order notifications
-    const fakeNames = ['Ahmad', 'Siti', 'Mohd', 'Nurul', 'Farhan', 'Linda', 'Faisal', 'Aminah'];
-    const fakeLocations = ['Kuala Lumpur', 'Selangor', 'Johor', 'Penang', 'Perak', 'Kedah'];
-    const fakeProducts = ['GA-110 Hitam', 'GA-100 Merah'];
-    
-    function showFakeOrderNotification() {
-      const randomName = fakeNames[Math.floor(Math.random() * fakeNames.length)];
-      const randomLocation = fakeLocations[Math.floor(Math.random() * fakeLocations.length)];
-      const randomProduct = fakeProducts[Math.floor(Math.random() * fakeProducts.length)];
-      
-      document.getElementById('fakeCustomerName').textContent = randomName;
-      document.getElementById('fakeCustomerLocation').textContent = randomLocation;
-      document.getElementById('fakeProductName').textContent = randomProduct;
-      
-      const notification = document.getElementById('fakeOrderNotification');
-      notification.classList.remove('hidden');
-      notification.classList.add('opacity-100', 'scale-100', 'translate-x-0');
-      
-      // Hide notification after 5 seconds
-      setTimeout(() => {
-        notification.classList.add('hidden');
-      }, 5000);
-    }
-    
-    function hideFakeOrderNotification() {
-      document.getElementById('fakeOrderNotification').classList.add('hidden');
-    }
-    
-    function hideCodNotification() {
-      document.getElementById('codNotification').classList.add('hidden');
-    }
-    
-    // Show fake order notifications at random intervals
-    function scheduleFakeNotification() {
-      const randomTime = Math.floor(Math.random() * 30000) + 10000; // Between 10-40 seconds
-      setTimeout(() => {
-        showFakeOrderNotification();
-        scheduleFakeNotification();
-      }, randomTime);
-    }
-    
-    // Start showing fake notifications after 5 seconds
-    setTimeout(scheduleFakeNotification, 5000);
   </script>
 </body>
 </html>
