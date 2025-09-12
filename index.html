@@ -865,6 +865,187 @@
       font-size: 14px;
       color: #666;
     }
+    
+    /* Payment encouragement styles */
+    .payment-encouragement {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+    }
+    
+    .payment-encouragement h3 {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .payment-encouragement h3 i {
+      margin-right: 0.5rem;
+    }
+    
+    .payment-encouragement ul {
+      list-style-type: none;
+      padding-left: 1.5rem;
+    }
+    
+    .payment-encouragement li {
+      margin-bottom: 0.25rem;
+      position: relative;
+    }
+    
+    .payment-encouragement li:before {
+      content: "✓";
+      position: absolute;
+      left: -1.5rem;
+      color: #86efac;
+      font-weight: bold;
+    }
+    
+    .online-payment-glow {
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+      border: 2px solid #3b82f6;
+    }
+    
+    .cod-warning {
+      background-color: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      border-radius: 0.25rem;
+    }
+    
+    .cod-warning p {
+      margin: 0;
+      color: #92400e;
+      font-size: 0.875rem;
+    }
+    
+    /* Location selection styles */
+    .location-selection {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .location-options {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    
+    .location-option {
+      flex: 1;
+      border: 2px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .location-option:hover {
+      border-color: #3b82f6;
+    }
+    
+    .location-option.selected {
+      border-color: #3b82f6;
+      background-color: #eff6ff;
+    }
+    
+    .location-option input[type="radio"] {
+      display: none;
+    }
+    
+    .location-option .location-title {
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+    
+    .location-option .location-desc {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+    
+    /* Payment comparison card styles */
+    .payment-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .payment-card {
+      border-radius: 0.75rem;
+      padding: 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .payment-card.online {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+    }
+    
+    .payment-card.cod {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      color: white;
+    }
+    
+    .payment-card h3 {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .payment-card h3 i {
+      margin-right: 0.5rem;
+    }
+    
+    .payment-card ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin-bottom: 0;
+    }
+    
+    .payment-card li {
+      margin-bottom: 0.5rem;
+      position: relative;
+      padding-left: 1.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .payment-card.online li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #86efac;
+      font-weight: bold;
+    }
+    
+    .payment-card.cod li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #fde68a;
+      font-weight: bold;
+    }
+    
+    @media (max-width: 640px) {
+      .payment-comparison {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Strikethrough for free shipping */
+    .strikethrough {
+      text-decoration: line-through;
+      color: #9ca3af;
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
@@ -886,7 +1067,7 @@
         Order Sekarang
       </a>
       <!-- Added text below Order button -->
-      <p class="mt-4 text-lg font-semibold">boleh COD Jam sampai Baru Bayar</p>
+      <p class="mt-4 text-lg font-semibold">Pembayaran Online Dapat Penghantaran Percuma</p>
     </section>
     
     <!-- Video Section - Removed heading -->
@@ -959,8 +1140,8 @@
           <p class="text-sm">Rekaan moden sesuai dipakai ke mana-mana, buat anda nampak lebih bergaya.</p>
         </div>
         <div class="bg-white text-black rounded-xl shadow-lg p-6 text-center">
-          <p class="font-semibold text-lg">4. Mudah & Pantas</p>
-          <p class="text-sm">Tempahan mudah, penghantaran pantas terus ke pintu rumah anda.</p>
+          <p class="font-semibold text-lg">4. Penghantaran Percuma</p>
+          <p class="text-sm">Dapatkan penghantaran percuma untuk seluruh Semenanjung dengan pembayaran online.</p>
         </div>
       </div>
     </section>
@@ -1120,6 +1301,55 @@
           </div>
         </div>
         
+        <!-- Payment Comparison Section -->
+        <div>
+          <label class="font-semibold block mb-2">Bandingkan Pembayaran</label>
+          <div class="payment-comparison">
+            <div class="payment-card online">
+              <h3><i class="fas fa-credit-card"></i> Online Payment</h3>
+              <ul>
+                <li>Masa Sampai 1-3 hari SM, SS 3-7 hari</li>
+                <li>Tiada charge penghantaran dikenakan</li>
+                <li>Return Item percuma dalam masa 3 hari jika tak berkenan</li>
+              </ul>
+            </div>
+            <div class="payment-card cod">
+              <h3><i class="fas fa-money-bill-wave"></i> COD</h3>
+              <ul>
+                <li>Masa Sampai lambat disebabkan manual courier rider 3-10 hari</li>
+                <li>Ada charge shipping RM10 SM, RM15 SS</li>
+                <li>Return item ditanggung buyer jika tak berkenan</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Payment Encouragement Section -->
+        <div class="payment-encouragement">
+          <h3><i class="fas fa-star"></i> Kenapa Pilih Pembayaran Online?</h3>
+          <ul>
+            <li>Penghantaran percuma untuk Semenanjung</li>
+            <li>Pemprosesan pesanan lebih pantas</li>
+            <li>Hanya RM7 tambahan untuk Sabah & Sarawak</li>
+            <li>Dapat tracking number segera</li>
+          </ul>
+        </div>
+        
+        <!-- Location Selection -->
+        <div class="location-selection">
+          <label class="font-semibold block mb-2">Lokasi Penghantaran</label>
+          <div class="location-options">
+            <label class="location-option" for="locationSM">
+              <input type="radio" name="location" id="locationSM" value="SM">
+              <div class="location-title">Semenanjung Malaysia</div>
+            </label>
+            <label class="location-option" for="locationSS">
+              <input type="radio" name="location" id="locationSS" value="SS">
+              <div class="location-title">Sabah & Sarawak</div>
+            </label>
+          </div>
+        </div>
+        
         <!-- Order Summary -->
         <div class="order-summary">
           <h3 class="font-semibold mb-2">Ringkasan Pesanan</h3>
@@ -1140,9 +1370,12 @@
           <label class="font-semibold block mb-2">Pilihan Pembayaran</label>
           <select id="payment" required class="w-full border rounded p-2">
             <option value="">-- Pilih Pembayaran --</option>
-            <option value="COD">COD-Barang Sampai Baru Bayar (+RM5)</option>
-            <option value="Online">Online Payment (Fast Shipping)</option>
+            <option value="Online">Online Payment (Free Shipping SM + RM7 SS)</option>
+            <option value="COD">COD-Barang Bayar Bila Sampai (SM: +RM10, SS: +RM15)</option>
           </select>
+          <div class="cod-warning">
+            <p><i class="fas fa-info-circle mr-1"></i> COD dikenakan caj tambahan untuk penghantaran. Pilih Online Payment untuk penghantaran percuma.</p>
+          </div>
         </div>
         
         <!-- Hidden inputs to store product quantities -->
@@ -1911,6 +2144,24 @@ ${paymentStatusText}
         });
       });
       
+      // Initialize location selection
+      const locationOptions = document.querySelectorAll('.location-option');
+      locationOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          // Remove selected class from all options
+          locationOptions.forEach(opt => opt.classList.remove('selected'));
+          
+          // Add selected class to clicked option
+          this.classList.add('selected');
+          
+          // Check the radio button
+          this.querySelector('input[type="radio"]').checked = true;
+          
+          // Update order summary
+          updateOrderSummary();
+        });
+      });
+      
       // Initialize WhatsApp review carousel first
       initializeWhatsappReviewCarousel();
       
@@ -2004,26 +2255,60 @@ ${paymentStatusText}
         orderSummaryContent.innerHTML = summaryHTML;
       }
       
-      // Add COD fee if applicable
+      // Add shipping fee based on payment method, quantity, and location
       const paymentMethod = document.getElementById('payment').value;
-      if (paymentMethod === 'COD' && totalAmount > 0) {
-        // Check if total quantity is 2 or more to apply free COD
-        if (totalQuantity >= 2) {
+      const selectedLocation = document.querySelector('input[name="location"]:checked');
+      let shippingFee = 0;
+      let shippingFeeText = '';
+      
+      if (paymentMethod && selectedLocation && totalQuantity > 0) {
+        const location = selectedLocation.value;
+        
+        if (paymentMethod === 'COD') {
+          // For COD: RM10 for SM, RM15 for SS for single items
+          if (totalQuantity >= 2) {
+            shippingFeeText = 'COD (Free for 2+ items)';
+          } else {
+            if (location === 'SM') {
+              shippingFee = 10;
+              shippingFeeText = 'COD Fee (Semenanjung)';
+            } else if (location === 'SS') {
+              shippingFee = 15;
+              shippingFeeText = 'COD Fee (Sabah/Sarawak)';
+            }
+          }
+        } else if (paymentMethod === 'Online') {
+          // For Online: Free for SM, RM7 for SS for single items
+          if (totalQuantity >= 2) {
+            shippingFeeText = 'Free Shipping';
+          } else {
+            if (location === 'SS') {
+              shippingFee = 7;
+              shippingFeeText = 'Shipping Fee (Sabah/Sarawak)';
+            } else {
+              shippingFeeText = 'Free Shipping (Semenanjung)';
+            }
+          }
+        }
+        
+        // Add shipping fee to order summary
+        if (shippingFee === 0) {
+          // If shipping is free, show strikethrough
           orderSummaryContent.innerHTML += `
             <div class="order-summary-item">
-              <span>Bayaran COD (Free)</span>
-              <span><s>RM10.00</s></span>
+              <span>${shippingFeeText}</span>
+              <span class="strikethrough">RM0.00</span>
             </div>
           `;
         } else {
           orderSummaryContent.innerHTML += `
             <div class="order-summary-item">
-              <span>Bayaran COD</span>
-              <span>RM5.00</span>
+              <span>${shippingFeeText}</span>
+              <span>RM${shippingFee.toFixed(2)}</span>
             </div>
           `;
-          totalAmount += 5;
         }
+        totalAmount += shippingFee;
       }
       
       // Update total amount
@@ -2137,6 +2422,13 @@ ${paymentStatusText}
           return;
         }
         
+        // Check location selection
+        const selectedLocation = document.querySelector('input[name="location"]:checked');
+        if (!selectedLocation) {
+          showErrorPopup('Sila pilih lokasi penghantaran');
+          return;
+        }
+        
         // Show customer info modal
         document.getElementById('customerInfoModal').classList.add('active');
       });
@@ -2185,9 +2477,25 @@ ${paymentStatusText}
         let total = price * quantity;
         
         const paymentMethod = document.getElementById('payment').value;
-        // Check if total quantity is 2 or more to apply free COD
-        if (paymentMethod === 'COD' && quantity < 2) {
-          total += 5;
+        const selectedLocation = document.querySelector('input[name="location"]:checked').value;
+        
+        // Calculate shipping fees based on payment method, quantity, and location
+        if (paymentMethod === 'COD') {
+          // For COD: RM10 for SM, RM15 for SS for single items
+          if (quantity < 2) {
+            if (selectedLocation === 'SM') {
+              total += 10; // SM
+            } else if (selectedLocation === 'SS') {
+              total += 15; // SS
+            }
+          }
+          // For 2+ items, COD is free
+        } else if (paymentMethod === 'Online') {
+          // For Online: Free for SM, RM7 for SS for single items
+          if (quantity < 2 && selectedLocation === 'SS') {
+            total += 7; // SS only
+          }
+          // For 2+ items, shipping is free
         }
         
         const customerName = document.getElementById('modalCustomerName').value;
@@ -2246,20 +2554,7 @@ ${paymentStatusText}
           // Show COD notification
           showCodNotification(customerName, product);
           
-          // Reset form
-          orderForm.reset();
-          document.querySelectorAll('.product-card').forEach(card => {
-            card.classList.remove('selected');
-            card.querySelectorAll('.quantity-btn').forEach(btn => {
-              btn.classList.remove('active');
-            });
-          });
-          updateOrderSummary();
-          
-          // Close customer info modal
-          customerInfoModal.classList.remove('active');
-          
-          // Track purchase event for Meta Pixel
+          // Track purchase event for COD orders
           fbq('track', 'Purchase', {
             content_name: product,
             content_category: 'Watches',
@@ -2269,6 +2564,22 @@ ${paymentStatusText}
             currency: 'MYR',
             num_items: quantity
           });
+          
+          // Reset form
+          orderForm.reset();
+          document.querySelectorAll('.product-card').forEach(card => {
+            card.classList.remove('selected');
+            card.querySelectorAll('.quantity-btn').forEach(btn => {
+              btn.classList.remove('active');
+            });
+          });
+          document.querySelectorAll('.location-option').forEach(option => {
+            option.classList.remove('selected');
+          });
+          updateOrderSummary();
+          
+          // Close customer info modal
+          customerInfoModal.classList.remove('active');
           
         } catch (error) {
           console.error('Error processing order:', error);
