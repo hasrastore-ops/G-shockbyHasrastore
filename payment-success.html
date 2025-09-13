@@ -65,8 +65,93 @@
       </a>
     </div>
   </div>
-
   <script>
+    // Function to send Discord notification
+    async function sendDiscordNotification(orderData) {
+      // Format the date and time
+      const orderDateTime = new Date().toLocaleString('ms-MY', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+        
+      const embed = {
+        title: "✅ PEMBAYARAN BERJAYA ✅",
+        color: 5010944, // Green color for success
+        fields: [
+          {
+            name: "Status",
+            value: "**TELAH DIBAYAR**",
+            inline: false
+          },
+          {
+            name: "Produk",
+            value: orderData.product,
+            inline: true
+          },
+          {
+            name: "Kuantiti",
+            value: orderData.quantity.toString(),
+            inline: true
+          },
+          {
+            name: "Jumlah",
+            value: `RM${orderData.total}`,
+            inline: true
+          },
+          {
+            name: "Maklumat Pelanggan",
+            value: `**Nama:** ${orderData.customerName}\n**No Telefon:** ${orderData.customerPhone}\n**Alamat:** ${orderData.customerAddress}\n**Poskod:** ${orderData.poskod}\n**Negeri:** ${orderData.customerState}`,
+            inline: false
+          },
+          {
+            name: "Jenis Pembayaran",
+            value: orderData.paymentMethod,
+            inline: true
+          },
+          {
+            name: "Masa",
+            value: orderDateTime,
+            inline: true
+          }
+        ],
+        footer: {
+          text: "SILA PROSESKAN PESANAN INI SECEPAT MUNGKIN"
+        }
+      };
+        
+      const payload = {
+        username: "OrderBot",
+        avatar_url: "https://i.imgur.com/4M34hi2.png", // Optional bot avatar
+        embeds: [embed]
+      };
+        
+      const webhookUrl = "https://discord.com/api/webhooks/1416323971040804906/OnfN01Ezg33-B9lLN5aH7huTbTgeHHCLXO_NtTkiHNIUTJdlfZlyJrk0eIghulpRLqPu";
+        
+      try {
+        const response = await fetch(webhookUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+        
+        if (response.ok) {
+          console.log('Discord notification sent successfully');
+          return true;
+        } else {
+          console.error('Discord webhook error:', response.status, response.statusText);
+          return false;
+        }
+      } catch (error) {
+        console.error('Error sending Discord notification:', error);
+        return false;
+      }
+    }
+    
     // Check if there's a pending order in sessionStorage
     window.addEventListener('load', function() {
       // Get order data from sessionStorage
@@ -117,21 +202,17 @@
           body: JSON.stringify({
             chat_id: '642142575',
             text: `✅ <b>PESANAN BARU - PEMBAYARAN BERJAYA</b> ✅
-
 📦 <b>PRODUK:</b> ${orderData.product}
 🔢 <b>KUANTITI:</b> ${orderData.quantity}
 💰 <b>JUMLAH:</b> RM${orderData.total}
-
 👤 <b>MAKLUMAT PELANGGAN:</b>
 📝 <b>Nama:</b> ${orderData.customerName}
 📱 <b>No Telefon:</b> ${orderData.customerPhone}
 🏠 <b>Alamat:</b> ${orderData.customerAddress}
 📮 <b>Poskod:</b> ${orderData.poskod}
 🗺️ <b>Negeri:</b> ${orderData.customerState}
-
 💳 <b>JENIS PEMBAYARAN:</b> ${orderData.paymentMethod}
 📅 <b>MASA:</b> ${orderDateTime}
-
 ⚠️ <b>SILA PROSESKAN PESANAN INI SECEPAT MUNGKIN</b>`,
             parse_mode: 'HTML'
           })
@@ -145,6 +226,16 @@
           })
           .catch(error => {
             console.error('Error sending Telegram notification:', error);
+          });
+        
+        // Send Discord notification
+        sendDiscordNotification(orderData)
+          .then(success => {
+            if (success) {
+              console.log('Discord notification sent successfully');
+            } else {
+              console.error('Failed to send Discord notification');
+            }
           });
         
         // Clear sessionStorage
